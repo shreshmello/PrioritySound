@@ -20,6 +20,8 @@ Context_Modes = {
         "vehicle_freq": 200,
         "sensitivity": 0.8
     },
+# Have user input frequency cuz home frqeuncies in fire alarms or wtv tend to differ in each household so we need to account for that. 
+# Add in pitch as well
     "Night": {
         "alarm_freq": 1400,
         "vehicle_freq": 180,
