@@ -50,8 +50,8 @@ class PrioritySoundUI(BoxLayout):
     def check_audio(self):
         try:
             audio = sd.rec(
-                int(LISTEN_SECONDS * SAMPLE_RATE),
-                samplerate=SAMPLE_RATE,
+                int(Listen_Seconds * Sample_Rate),
+                samplerate=Sample_Rate,
                 channels=1,
                 dtype="float32"
             )
