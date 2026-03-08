@@ -32,8 +32,13 @@ class SoundClassifier:
         return audio.flatten()
 
     def classify_audio(self, audio):
-        return self.classifier(audio, candidate_labels=self.labels)
+        return self.classifier(
+    audio,
+    candidate_labels=self.labels,
+    top_k=5
+)
 
     def classify_once(self):
         audio = self.record_audio()
+
         return self.classify_audio(audio)
