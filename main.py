@@ -3,6 +3,15 @@ from emergency_detector import EmergencySoundDetector
 from ui_base import BaseUI
 from detection_buffer import DetectionBuffer
 buffer = DetectionBuffer()
+def get_consensus_label(results, threshold=0.40):
+    valid = []
+    for r in results:
+        if r["score"] >= threshold:
+            valid.append(r["label"])
+    if not valid:
+        return None
+    # pick most frequent label
+    return max(set(valid), key=valid.count)
 
 class ConsoleUI(BaseUI):
     def show_startup(self, labels):
@@ -30,9 +39,11 @@ def main():
         while True:
             ui.show_recording()
             results = classifier.classify_once()
-            best = results[0]
-            label = best["label"]
-            score = best["score"]
+label = get_consensus_label(results)
+if label is None:
+    continue
+score = results[0]["score"]
+
 # ignore low confidence predictions
 if score < 0.55:
     continue
@@ -50,4 +61,5 @@ if confirmed_label:
 if __name__ == "__main__":
 
     main()
+
 
