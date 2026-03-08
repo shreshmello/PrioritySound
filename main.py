@@ -31,12 +31,20 @@ def main():
             best = results[0]
             label = best["label"]
             score = best["score"]
-            alert_level = emergency_detector.get_alert_level(label, score)
-            ui.show_detection(label, score, alert_level)
+# ignore low confidence predictions
+if score < 0.55:
+    continue
+buffer.add(label)
+confirmed_label = buffer.confirmed()
+
+if confirmed_label:
+    alert_level = emergency_detector.get_alert_level(confirmed_label, score)
+    ui.show_detection(confirmed_label, score, alert_level)
 
     except KeyboardInterrupt: #just for now w/ console 
         print("Stopped.")
 
 
 if __name__ == "__main__":
+
     main()
