@@ -1,6 +1,8 @@
 from classifier import SoundClassifier
 from emergency_detector import EmergencySoundDetector
 from ui_base import BaseUI
+from detection_buffer import DetectionBuffer
+buffer = DetectionBuffer()
 
 class ConsoleUI(BaseUI):
     def show_startup(self, labels):
@@ -48,3 +50,4 @@ if confirmed_label:
 if __name__ == "__main__":
 
     main()
+
