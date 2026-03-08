@@ -23,12 +23,13 @@ class EmergencySoundDetector:
             "dog barking",
         }
 
-        self.emergency_threshold = 0.35 #confidence score
-        self.important_threshold = 0.45
+        self.emergency_threshold = 0.6 #confidence score
+        self.important_threshold = 0.55
 
     def get_alert_level(self, label: str, score: float) -> str:
         if label in self.emergency_labels and score >= self.emergency_threshold:
             return "emergency"
         if label in self.important_labels and score >= self.important_threshold:
             return "important"
+
         return "normal"
