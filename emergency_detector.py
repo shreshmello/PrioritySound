@@ -1,35 +1,18 @@
 class EmergencySoundDetector:
-    def __init__(self) -> None:
-        self.emergency_labels = {
-            "smoke alarm",
-            "fire alarm",
-            "carbon monoxide alarm",
-            "glass breaking",
-            "window breaking",
-            "gunshot",
-            "explosion",
-            "police siren",
-            "ambulance siren",
-            "fire truck siren",
+    def __init__(self, user_preferences):
+        self.user_preferences = user_preferences
+        self.thresholds = {
+            "emergency": 0.6,
+            "high": 0.55,
+            "medium": 0.5,
+            "low": 0.45,
+            "normal": 0.5
         }
 
-        self.important_labels = {
-            "door knocking",
-            "doorbell ringing",
-            "baby crying",
-            "person shouting",
-            "someone calling your name",
-            "car horn",
-            "dog barking",
-        }
+    def get_alert_level(self, label, score):
+        priority = self.user_preferences.get_priority(label)
+        threshold = self.thresholds.get(priority, 0.5)
+        if score < threshold:
+            return "ignore"
+        return priority
 
-        self.emergency_threshold = 0.6 #confidence score
-        self.important_threshold = 0.55
-
-    def get_alert_level(self, label: str, score: float) -> str:
-        if label in self.emergency_labels and score >= self.emergency_threshold:
-            return "emergency"
-        if label in self.important_labels and score >= self.important_threshold:
-            return "important"
-
-        return "normal"
