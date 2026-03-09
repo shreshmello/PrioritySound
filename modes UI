@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="modes-container card">
+  <h2>Choose Mode</h2>
+  <div class="mode-cards">
+    {% for m in modes %}
+    <div class="mode-card">
+      <h3>{{ m.name }}</h3>
+      <p>{{ m.description }}</p>
+      <form method="POST" action="/apply_mode">
+        <input type="hidden" name="mode" value="{{ m.name }}">
+        <button type="submit" class="button">Apply Mode</button>
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
