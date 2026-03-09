@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+    <h2>Welcome, {{ email }}</h2>
+    <h3>Your Saved Preferences:</h3>
+    {% if preferences %}
+        <ul>
+        {% for sound, level in preferences.items() %}
+            <li><strong>{{ sound }}</strong> → {{ level }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No preferences saved yet.</p>
+    {% endif %}
+    <a class="button" href="/preferences">Edit Preferences</a>
+</div>
+{% endblock %}
