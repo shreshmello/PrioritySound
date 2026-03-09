@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PrioritySound</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<nav>
+    <div class="nav-left">PrioritySound</div>
+    <div class="nav-right">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/preferences">Preferences</a>
+        <a href="/logout">Logout</a>
+    </div>
+</nav>
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+</body>
+</html>
