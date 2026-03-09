@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-
 <div class="dashboard-container">
-  <!-- Top Section: Live Status -->
+
+  <!-- Top Section -->
   <div class="card live-status">
     <div class="status-left">
       <span class="live-dot"></span>
-      <strong>Listening {{ 'Active' if alerts else 'Offline' }}</strong>
+      <strong>Listening Active</strong>
     </div>
     <div class="status-right">
       <span>Microphone: Connected</span>
@@ -14,6 +14,7 @@
       <span>Current Mode: {{ mode or 'Custom' }}</span>
     </div>
   </div>
+
   <!-- Middle Section: Live Feed -->
   <div class="card feed-section">
     <h3>Live Detection Feed</h3>
@@ -22,7 +23,7 @@
         <div class="alert-card" style="border-left: 5px solid {{ alert.color }}">
           <span class="alert-time">{{ alert.time }}</span>
           <span class="alert-sound">{{ alert.sound }}</span>
-          <span class="alert-priority">{{ alert.priority|upper }}</span>
+          <span class="alert-priority {{ alert.priority }}">{{ alert.priority|upper }}</span>
         </div>
       {% else %}
         <p>No alerts yet.</p>
@@ -47,7 +48,7 @@
         <option value="medium">Medium</option>
         <option value="low">Low</option>
       </select>
-      <button type="submit">Simulate Alert</button>
+      <button type="submit" class="button">Simulate Alert</button>
     </form>
 
     <a href="/preferences" class="button">Edit Preferences</a>
@@ -56,6 +57,5 @@
   </div>
 
 </div>
-
-<script src="/static/dashboard.js"></script>
+<script src="{{ url_for('static','dashboard.js') }}"></script>
 {% endblock %}
