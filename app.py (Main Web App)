@@ -47,7 +47,7 @@ def login():
         user = User.query.filter_by(email=email).first()
         if user and check_password_hash(user.password,password):
             session["user_id"] = user.id
-            return redirect("/dashboard")
+            return redirect("/start_dashboard")
         return "Invalid credentials!"
     return render_template("login.html")
 
@@ -131,3 +131,9 @@ def simulate_alert_route():
 
 if __name__=="__main__":
     app.run(debug=True)
+
+@app.route("/start_dashboard")
+def start_dashboard():
+    if "user_id" not in session:
+        return redirect("/login")
+    return render_template("dashboard_loading.html")
