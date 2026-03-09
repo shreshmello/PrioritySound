@@ -2,6 +2,8 @@ from classifier import SoundClassifier
 from emergency_detector import EmergencySoundDetector
 from ui_base import BaseUI
 from detection_buffer import DetectionBuffer
+from user_preferences import UserPreferences
+
 buffer = DetectionBuffer()
 def get_consensus_label(results, threshold=0.40):
     valid = []
@@ -31,8 +33,10 @@ class ConsoleUI(BaseUI):
 
 
 def main():
+    username = input("Enter username: ")
+    user_preferences = UserPreferences(username)
     classifier = SoundClassifier(labels_file="labels.csv",sample_rate=16000,duration=2)
-    emergency_detector = EmergencySoundDetector()
+    emergency_detector = EmergencySoundDetector(user_preferences)
     ui = ConsoleUI()
     ui.show_startup(classifier.get_labels())
     try:
@@ -51,8 +55,10 @@ buffer.add(label)
 confirmed_label = buffer.confirmed()
 
 if confirmed_label:
-    alert_level = emergency_detector.get_alert_level(confirmed_label, score)
-    ui.show_detection(confirmed_label, score, alert_level)
+       alert_level = emergency_detector.get_alert_level(label, score)
+       if alert_level == "ignore":
+          continue
+       ui.show_detection(label, score, alert_level)
 
     except KeyboardInterrupt: #just for now w/ console 
         print("Stopped.")
@@ -61,5 +67,6 @@ if confirmed_label:
 if __name__ == "__main__":
 
     main()
+
 
 
