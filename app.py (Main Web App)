@@ -1,69 +1,81 @@
 #pip install flask 
 
-# Import Flask framework components
-# flask handles backend routing
-# render_template loads HTML files for web ui
-# request handles form data from the user
-# session stores temporary user login data
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, url_for
+from werkzeug.security import generate_password_hash, check_password_hash
+from models import db, User
+import json
 
-# import custom modules for user preference storing
-# and sound priority logic integration
-from user_preferences import UserPreferences
-from emergency_detector import EmergencySoundDetector
 app = Flask(__name__)
-# This allows Flask to store user login data safely
-app.secret_key = "prioritysound_secret"
-# all the sounds available for users that our software can detect add more sounds in csv 
-# sounds that users can prioritize and custom
+app.secret_key = "super_secret_key"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///prioritysound.db"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+db.init_app(app)
+with app.app_context():
+    db.create_all()
 AVAILABLE_SOUNDS = [
     "baby crying",
     "doorbell ringing",
-    "door knocking",
-    "dog barking",
     "smoke alarm",
     "fire alarm",
     "police siren",
     "ambulance siren",
     "car horn"
 ]
-# Root route: Login page
-# handles both displaying login form (GET)
-# and processing login submission (POST)
-@app.route("/", methods=["GET", "POST"])
+@app.route("/")
+def home():
+    return redirect("/login")
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        email = request.form["email"]
+        password = generate_password_hash(request.form["password"])
+        if User.query.filter_by(email=email).first():
+            return "Email already exists."
+        new_user = User(email=email, password=password)
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect("/login")
+    return render_template("register.html")
+@app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        username = request.form["username"]
-        session["username"] = username
-        return redirect("/onboarding")
+        email = request.form["email"]
+        password = request.form["password"]
+        user = User.query.filter_by(email=email).first()
+        if user and check_password_hash(user.password, password):
+            session["user_id"] = user.id
+            return redirect("/dashboard")
+        return "Invalid credentials."
     return render_template("login.html")
-# Allows first-time users to select sound priorities
-@app.route("/onboarding", methods=["GET", "POST"])
-def onboarding():
-    username = session.get("username")
-    if request.method == "POST":
-        preferences = {}
-# Loop through all available sounds
-# and collect selected priority levels
-        for sound in AVAILABLE_SOUNDS:
-            priority = request.form.get(sound)
-            if priority and priority != "ignore":
-                preferences[sound] = priority
-        user = UserPreferences(username)
-        user.priorities = preferences
-        user.save()
-        return redirect("/dashboard")
-    return render_template("onboarding.html", sounds=AVAILABLE_SOUNDS)
 @app.route("/dashboard")
 def dashboard():
-# retrieve username from past session
-    username = session.get("username")
-# saves users preferences and loads them for next time
-    user = UserPreferences(username)
+    if "user_id" not in session:
+        return redirect("/login")
+    user = User.query.get(session["user_id"])
+    preferences = json.loads(user.preferences) if user.preferences else {}
     return render_template(
         "dashboard.html",
-        username=username,
-        priorities=user.priorities
+        email=user.email,
+        preferences=preferences
     )
+@app.route("/preferences", methods=["GET", "POST"])
+def preferences():
+    if "user_id" not in session:
+        return redirect("/login")
+    user = User.query.get(session["user_id"])
+    if request.method == "POST":
+        prefs = {}
+        for sound in AVAILABLE_SOUNDS:
+            level = request.form.get(sound)
+            if level and level != "ignore":
+                prefs[sound] = level
+        user.preferences = json.dumps(prefs)
+        db.session.commit()
+        return redirect("/dashboard")
+    return render_template("preferences.html", sounds=AVAILABLE_SOUNDS)
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/login")
 if __name__ == "__main__":
     app.run(debug=True)
