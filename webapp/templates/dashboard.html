@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="dashboard-container">
+
+  <!-- Top Section -->
+  <div class="card live-status">
+    <div class="status-left">
+      <span class="live-dot"></span>
+      <strong>Listening Active</strong>
+    </div>
+    <div class="status-right">
+      <span>Microphone: Connected</span>
+      <span>Alerts Today: {{ alerts|length }}</span>
+      <span>Current Mode: {{ mode or 'Custom' }}</span>
+    </div>
+  </div>
+
+  <!-- Middle Section: Live Feed -->
+  <div class="card feed-section">
+    <h3>Live Detection Feed</h3>
+    <div id="alerts-feed">
+      {% for alert in alerts %}
+        <div class="alert-card" style="border-left: 5px solid {{ alert.color }}">
+          <span class="alert-time">{{ alert.time }}</span>
+          <span class="alert-sound">{{ alert.sound }}</span>
+          <span class="alert-priority {{ alert.priority }}">{{ alert.priority|upper }}</span>
+        </div>
+      {% else %}
+        <p>No alerts yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Bottom Section: Quick Actions -->
+  <div class="card actions-section">
+    <form id="simulate-form">
+      <select name="sound" required>
+        <option disabled selected>Select Sound</option>
+        <option value="Baby Crying">Baby Crying</option>
+        <option value="Doorbell">Doorbell</option>
+        <option value="Smoke Alarm">Smoke Alarm</option>
+        <option value="Fire Alarm">Fire Alarm</option>
+      </select>
+      <select name="priority" required>
+        <option disabled selected>Select Priority</option>
+        <option value="emergency">Emergency</option>
+        <option value="high">High</option>
+        <option value="medium">Medium</option>
+        <option value="low">Low</option>
+      </select>
+      <button type="submit" class="button">Simulate Alert</button>
+    </form>
+
+    <a href="/preferences" class="button">Edit Preferences</a>
+    <a href="/modes" class="button">Change Mode</a>
+    <a href="/history" class="button">View History</a>
+  </div>
+
+</div>
+<script src="{{ url_for('static','dashboard.js') }}"></script>
+{% endblock %}
