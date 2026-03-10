@@ -4,7 +4,12 @@ from models import db, User
 import json
 from datetime import datetime
 from utils import simulate_alert
+from flask import Flask, render_template
 
+app = Flask(__name__)
+@app.route("/")
+def home():
+    return render_template("dashboard.html")
 app = Flask(__name__)
 app.secret_key = "prioritysound_secret"
 
