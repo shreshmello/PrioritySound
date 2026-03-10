@@ -1,26 +1,12 @@
-# Import SQLAlchemy, which lets us connect Python to a database
-# it acts as an ORM (Object Relational Mapper)
-# essentially allows us to use Python classes instead of writing raw SQL queries
 from flask_sqlalchemy import SQLAlchemy
-# create database object. will be used to interact with our webpage
+
+# Database object
 db = SQLAlchemy()
-# create a User table in the database.
-# db.Model tells SQLAlchemy that this class represents a database table.
+
+# User table
 class User(db.Model):
-    # Unique ID for each user.
-    # Integer = whole number
-    # primary_key=True means this is the main identifier for each row
-    # automatically auto-increments (1, 2, 3, 4...)
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    # email column.
-    # String(120) means text up to 120 characters long.
-    # unique=True means no two users can have the same email.
-    # password column.
-    # This stores the HASHED password (not the plain password).
-    # nullable=False means every user must have a password cannot move forward without entering a password
-    password = db.Column(db.String(200), nullable=False)
-    # {"baby crying": "high", "doorbell": "medium"}
-    # nullable=True means it's optional (new users may not have preferences yet). can be changed later too 
-    preferences = db.Column(db.Text, nullable=True)
-    mode = db.Column(db.String(50), nullable=True)   # e.g., Parent Mode
+    id = db.Column(db.Integer, primary_key=True)  # Unique ID for each user
+    email = db.Column(db.String(120), unique=True, nullable=False)  # User email
+    password = db.Column(db.String(200), nullable=False)  # Hashed password
+    preferences = db.Column(db.Text, nullable=True)  # JSON string of user preferences
+    mode = db.Column(db.String(50), nullable=True)  # Current mode (e.g., "Parent", "Home")
