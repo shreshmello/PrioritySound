@@ -1,31 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>PrioritySound</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
-</head>
-<body>
-<nav class="navbar">
-  <div class="logo">PrioritySound</div>
-  <div class="nav-links">
-    <a href="/dashboard">Dashboard</a>
-    <a href="/history">History</a>
-    <a href="/preferences">Preferences</a>
-    <a href="/modes">Modes</a>
-    <div class="profile-dropdown">
-      <span>Account ▼</span>
-      <div class="dropdown-content">
-        <a href="/account">Settings</a>
-        <a href="/logout">Logout</a>
-      </div>
-    </div>
-  </div>
-</nav>
 
-<div class="content">
-  {% block content %}{% endblock %}
+{% extends "base.html" %}
+  {% block content %}
+<h2>Welcome {{email}}!</h2>
+<p>Current Mode: {{mode}}</p>
+
+<div class = 'alerts-feed'>
+    <h3>Recent Alerts</h3>
+    {% if alerts %}
+    <ul>
+      {% for alert in alerts %}
+        <li>
+          <strong>{{ alert.sound }}</strong> - {{ alert.priority }} ({{ alert.timestamp }})
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No alerts yet.</p>
+{% endif %}
 </div>
-</body>
-</html>
+
+<div class = 'record'>
+    <form method = 'POST' action = "{{url_for('simulate_alert_route')}}">
+    <button type = 'submit' class = 'recordBtn'>Record Audio</button>
+    </form>
+
+</div>
+{% endblock %}
+
+
+
