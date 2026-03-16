@@ -1,0 +1,31 @@
+
+{% extends "base.html" %}
+  {% block content %}
+<h2>Welcome {{email}}!</h2>
+<p>Current Mode: {{mode}}</p>
+
+<div class = 'alerts-feed'>
+    <h3>Recent Alerts</h3>
+    {% if alerts %}
+    <ul>
+      {% for alert in alerts %}
+        <li>
+          <strong>{{ alert.sound }}</strong> - {{ alert.priority }} ({{ alert.timestamp }})
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No alerts yet.</p>
+{% endif %}
+</div>
+
+<div class = 'record'>
+    <form method = 'POST' action = "{{url_for('simulate_alert_route')}}">
+    <button type = 'submit' class = 'recordBtn'>Record Audio</button>
+    </form>
+
+</div>
+{% endblock %}
+
+
+
