@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PrioritySound</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+<nav class="navbar">
+  <div class="logo">PrioritySound</div>
+  <div class="nav-links">
+    <a href="/dashboard">Dashboard</a>
+    <a href="/history">History</a>
+    <a href="/preferences">Preferences</a>
+    <a href="/modes">Modes</a>
+    <div class="profile-dropdown">
+      <span>Account ▼</span>
+      <div class="dropdown-content">
+        <a href="/account">Settings</a>
+        <a href="/logout">Logout</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="content">
+  {% block content %}{% endblock %}
+</div>
+</body>
+</html>
