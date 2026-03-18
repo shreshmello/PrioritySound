@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="preferences-container card">
+  <h2>Sound Preferences</h2>
+  <form method="POST">
+    {% for sound in all_sounds %}
+    <div class="preference-item">
+      <label>{{ sound }}</label>
+      <select name="{{ sound }}">
+        <option value="ignore" {% if user_preferences[sound]=='ignore' %}selected{% endif %}>Ignore</option>
+        <option value="low" {% if user_preferences[sound]=='low' %}selected{% endif %}>Low</option>
+        <option value="medium" {% if user_preferences[sound]=='medium' %}selected{% endif %}>Medium</option>
+        <option value="high" {% if user_preferences[sound]=='high' %}selected{% endif %}>High</option>
+        <option value="emergency" {% if user_preferences[sound]=='emergency' %}selected{% endif %}>Emergency</option>
+      </select>
+    </div>
+    {% endfor %}
+    <button type="submit" class="button">Save Preferences</button>
+  </form>
+</div>
+{% endblock %}

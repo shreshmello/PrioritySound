@@ -1,21 +1,31 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>History</title>
-</head>
-<body>
-    <h1>Alert History</h1>
+{% extends "base.html" %}
+{% block content %}
 
-    {% if alerts %}
-        <ul>
-        {% for alert in alerts %}
-            <li>{{ alert.time }} - {{ alert.sound }} - {{ alert.priority }}</li>
-        {% endfor %}
-        </ul>
-    {% else %}
-        <p>No alerts yet.</p>
-    {% endif %}
+<div class="card">
+  <div class="section-head">
+    <h3>Alert History</h3>
+  </div>
 
-    <a href="/dashboard">Back to Dashboard</a>
-</body>
-</html>
+  {% if alerts %}
+    <div class="alerts-stack">
+      {% for alert in alerts %}
+        <div class="alert-card {{ alert.priority }}">
+          <div>
+            <div class="alert-title">{{ alert.sound }}</div>
+            <div class="alert-subtitle">
+              {{ alert.priority|title }} priority
+              {% if alert.score is defined %}
+                • {{ (alert.score * 100)|round(0)|int }}% confidence
+              {% endif %}
+            </div>
+          </div>
+          <div class="alert-time">{{ alert.time }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">No alerts yet.</div>
+  {% endif %}
+</div>
+
+{% endblock %}

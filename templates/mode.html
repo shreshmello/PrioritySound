@@ -1,24 +1,22 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Modes</title>
-</head>
-<body>
-    <h1>Choose a Mode</h1>
-    <p>Current mode: {{ current_mode }}</p>
+{% extends "base.html" %}
+{% block content %}
 
-    <form method="POST">
-        {% for mode in modes %}
-            <div>
-                <label>
-                    <input type="radio" name="mode" value="{{ mode }}" {% if mode == current_mode %}checked{% endif %}>
-                    {{ mode }}
-                </label>
-            </div>
-        {% endfor %}
-        <button type="submit">Save Mode</button>
-    </form>
+<div class="card" style="max-width: 700px; margin: 0 auto;">
+  <div class="section-head">
+    <h3>Choose a Mode</h3>
+    <span class="muted">Current: {{ current_mode }}</span>
+  </div>
 
-    <a href="/dashboard">Back to Dashboard</a>
-</body>
-</html>
+  <form method="POST">
+    {% for mode in modes %}
+      <label class="stat-box" style="display:block; margin-bottom: 12px; cursor:pointer;">
+        <input type="radio" name="mode" value="{{ mode }}" {% if mode == current_mode %}checked{% endif %}>
+        <strong>{{ mode }}</strong>
+      </label>
+    {% endfor %}
+
+    <button type="submit" class="button button-primary">Save Mode</button>
+  </form>
+</div>
+
+{% endblock %}

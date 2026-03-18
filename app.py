@@ -23,8 +23,10 @@ classifier_lock = threading.Lock()
 detection_thread = None
 stop_event = threading.Event()
 prediction_lock = threading.Lock()
+user_context_lock = threading.Lock()
 
 alerts_feed = []
+
 latest_prediction = {
     "label": None,
     "score": 0,
@@ -32,6 +34,11 @@ latest_prediction = {
     "results": [],
     "accepted": False,
     "timestamp": None
+}
+
+active_detection_context = {
+    "user_id": None,
+    "preferences": {}
 }
 
 AVAILABLE_SOUNDS = [
@@ -64,28 +71,72 @@ def get_classifier():
     return classifier
 
 
+def normalize_prediction(data):
+    """
+    Always return only the most likely prediction.
+    Works whether classifier returns:
+    - data["label"] and data["score"]
+    - or a data["results"] list
+    """
+    results = data.get("results", []) or []
+
+    top_label = data.get("label")
+    top_score = float(data.get("score", 0) or 0)
+
+    if results:
+        # Accept either dicts like {"label": "...", "score": 0.92}
+        # or tuples/lists like ("label", 0.92)
+        parsed = []
+        for item in results:
+            if isinstance(item, dict):
+                parsed.append({
+                    "label": item.get("label"),
+                    "score": float(item.get("score", 0) or 0)
+                })
+            elif isinstance(item, (list, tuple)) and len(item) >= 2:
+                parsed.append({
+                    "label": item[0],
+                    "score": float(item[1] or 0)
+                })
+
+        if parsed:
+            parsed.sort(key=lambda x: x["score"], reverse=True)
+            if parsed[0]["label"]:
+                top_label = parsed[0]["label"]
+                top_score = parsed[0]["score"]
+            results = parsed
+
+    return {
+        "label": top_label,
+        "score": top_score,
+        "raw_label": data.get("raw_label", top_label),
+        "results": results,
+        "accepted": bool(data.get("accepted", top_score >= 0.5))
+    }
+
+
 def detector_callback(data):
     global latest_prediction, alerts_feed
 
+    normalized = normalize_prediction(data)
     timestamp = datetime.now().strftime("%I:%M %p")
 
     with prediction_lock:
         latest_prediction = {
-            **data,
+            **normalized,
             "timestamp": timestamp
         }
 
-    if data.get("accepted") and data.get("label"):
-        sound = data["label"]
-        score = data["score"]
+    if normalized.get("accepted") and normalized.get("label"):
+        sound = normalized["label"]
+        score = normalized["score"]
 
-        # Use the currently logged-in user's preferences only when available
-        priority = "low"
-        if "user_id" in session:
-            user = User.query.get(session["user_id"])
-            if user and user.preferences:
-                preferences = json.loads(user.preferences)
-                priority = preferences.get(sound, "low")
+        with user_context_lock:
+            preferences = active_detection_context.get("preferences", {}) or {}
+
+        priority = preferences.get(sound, "low")
+        if priority == "ignore":
+            return
 
         alert = simulate_alert(sound, priority, timestamp)
         alert["score"] = score
@@ -105,8 +156,15 @@ def detection_worker():
     )
 
 
-def start_background_detection():
+def start_background_detection(user_id):
     global detection_thread
+
+    user = User.query.get(user_id)
+    preferences = json.loads(user.preferences) if user and user.preferences else {}
+
+    with user_context_lock:
+        active_detection_context["user_id"] = user_id
+        active_detection_context["preferences"] = preferences
 
     if detection_thread and detection_thread.is_alive():
         return
@@ -128,12 +186,15 @@ def register():
     if request.method == "POST":
         email = request.form["email"]
         password = generate_password_hash(request.form["password"])
+
         if User.query.filter_by(email=email).first():
             return "Email exists!"
+
         user = User(email=email, password=password)
         db.session.add(user)
         db.session.commit()
         return redirect("/login")
+
     return render_template("register.html")
 
 
@@ -143,16 +204,20 @@ def login():
         email = request.form["email"]
         password = request.form["password"]
         user = User.query.filter_by(email=email).first()
+
         if user and check_password_hash(user.password, password):
             session["user_id"] = user.id
             return redirect("/start_dashboard")
+
         return "Invalid credentials!"
+
     return render_template("login.html")
 
 
 @app.route("/logout")
 def logout():
     session.clear()
+    stop_background_detection()
     return redirect("/login")
 
 
@@ -175,14 +240,16 @@ def start_dashboard():
 def dashboard():
     if "user_id" not in session:
         return redirect("/login")
+
     user = User.query.get(session["user_id"])
     preferences = json.loads(user.preferences) if user.preferences else {}
+
     return render_template(
         "dashboard.html",
         email=user.email,
         preferences=preferences,
         alerts=alerts_feed,
-        mode=user.mode
+        mode=user.mode or "Custom"
     )
 
 
@@ -193,16 +260,20 @@ def dashboard():
 def preferences():
     if "user_id" not in session:
         return redirect("/login")
+
     user = User.query.get(session["user_id"])
+
     if request.method == "POST":
         prefs = {}
         for sound in AVAILABLE_SOUNDS:
             level = request.form.get(sound)
             if level and level != "ignore":
                 prefs[sound] = level
+
         user.preferences = json.dumps(prefs)
         db.session.commit()
         return redirect("/dashboard")
+
     return render_template("preferences.html", sounds=AVAILABLE_SOUNDS)
 
 
@@ -213,7 +284,9 @@ def preferences():
 def modes():
     if "user_id" not in session:
         return redirect("/login")
+
     user = User.query.get(session["user_id"])
+
     if request.method == "POST":
         selected_mode = request.form.get("mode")
         if selected_mode in MODES:
@@ -221,7 +294,8 @@ def modes():
             user.preferences = json.dumps(MODES[selected_mode])
             db.session.commit()
         return redirect("/dashboard")
-    return render_template("mode.html", modes=MODES.keys(), current_mode=user.mode)
+
+    return render_template("mode.html", modes=MODES.keys(), current_mode=user.mode or "Custom")
 
 
 # ----------------------
@@ -231,6 +305,7 @@ def modes():
 def history():
     if "user_id" not in session:
         return redirect("/login")
+
     return render_template("history.html", alerts=alerts_feed)
 
 
@@ -242,7 +317,7 @@ def start_detection():
     if "user_id" not in session:
         return jsonify({"error": "Not logged in"}), 401
 
-    start_background_detection()
+    start_background_detection(session["user_id"])
     return jsonify({"status": "started"})
 
 

@@ -1,6 +1,6 @@
 import json
 import os
-
+#NOTE idk where this is being used rn 
 class UserPreferences:
     def __init__(self, username):
         self.username = username

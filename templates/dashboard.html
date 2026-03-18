@@ -1,15 +1,214 @@
-<div class="card">
-  <h3>Live Sound Detection</h3>
-  <p><strong>Prediction:</strong> <span id="live-label">Waiting...</span></p>
-  <p><strong>Confidence:</strong> <span id="live-score">-</span></p>
-  <p><strong>Time:</strong> <span id="live-time">-</span></p>
+{% extends "base.html" %}
+{% block content %}
+
+<div class="dashboard-shell">
+  <section class="hero-panel">
+    <div>
+      <p class="eyebrow">Live Monitoring</p>
+      <h1>PrioritySound Dashboard</h1>
+      <p class="hero-subtext">
+        Monitor important sounds in real time and show only the most likely classification.
+      </p>
+      <div class="hero-meta">
+        <span class="status-pill">
+          <span class="live-dot"></span>
+          Ready
+        </span>
+        <span class="mode-pill">Mode: {{ mode }}</span>
+      </div>
+    </div>
+
+    <div class="hero-actions">
+      <button class="button button-primary" id="start-btn">Start Detection</button>
+      <button class="button button-secondary" id="stop-btn">Stop Detection</button>
+    </div>
+  </section>
+
+  <div class="dashboard-grid">
+    <section class="card prediction-card">
+      <div class="section-head">
+        <h3>Top Classification</h3>
+        <span id="live-time" class="muted">--</span>
+      </div>
+
+      <div class="prediction-main">
+        <div class="prediction-ring">
+          <svg viewBox="0 0 120 120">
+            <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
+            <circle class="ring-progress" id="ring-progress" cx="60" cy="60" r="52"></circle>
+          </svg>
+          <div class="ring-center">
+            <span id="live-score">0%</span>
+          </div>
+        </div>
+
+        <div class="prediction-copy">
+          <p class="label-caption">Most likely sound</p>
+          <h2 id="live-label">Waiting...</h2>
+          <p id="prediction-status" class="prediction-status neutral">
+            Listening for a confident sound event...
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="card summary-card">
+      <div class="section-head">
+        <h3>Session Snapshot</h3>
+      </div>
+
+      <div class="summary-stats">
+        <div class="stat-box">
+          <span class="stat-label">Signed in</span>
+          <strong>{{ email }}</strong>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Active mode</span>
+          <strong>{{ mode }}</strong>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">Tracked alerts</span>
+          <strong id="alert-count">{{ alerts|length }}</strong>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="card alerts-card">
+    <div class="section-head">
+      <h3>Recent Alerts</h3>
+      <span class="muted">Latest 20</span>
+    </div>
+
+    <div id="alerts-list" class="alerts-stack">
+      {% if alerts %}
+        {% for alert in alerts %}
+          <div class="alert-card {{ alert.priority }}">
+            <div>
+              <div class="alert-title">{{ alert.sound|title }}</div>
+              <div class="alert-subtitle">
+                {{ alert.priority|title }} priority
+                {% if alert.score is defined %}
+                  • {{ (alert.score * 100)|round(0)|int }}% confidence
+                {% endif %}
+              </div>
+            </div>
+            <div class="alert-time">{{ alert.time }}</div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">No alerts yet. Start detection to begin monitoring.</div>
+      {% endif %}
+    </div>
+  </section>
 </div>
 
-<div class="card">
-  <h3>Recent Alerts</h3>
-  <ul id="alerts-list">
-    {% for alert in alerts %}
-      <li>{{ alert }}</li>
-    {% endfor %}
-  </ul>
-</div>
+<script>
+  const liveLabel = document.getElementById("live-label");
+  const liveScore = document.getElementById("live-score");
+  const liveTime = document.getElementById("live-time");
+  const predictionStatus = document.getElementById("prediction-status");
+  const alertsList = document.getElementById("alerts-list");
+  const alertCount = document.getElementById("alert-count");
+  const ring = document.getElementById("ring-progress");
+
+  const radius = 52;
+  const circumference = 2 * Math.PI * radius;
+  ring.style.strokeDasharray = circumference;
+  ring.style.strokeDashoffset = circumference;
+
+  function updateRing(score) {
+    const percent = Math.max(0, Math.min(score, 1));
+    const offset = circumference - (percent * circumference);
+    ring.style.strokeDashoffset = offset;
+  }
+
+  function getPriorityClass(text) {
+    const value = (text || "").toLowerCase();
+    if (value.includes("emergency")) return "emergency";
+    if (value.includes("high")) return "high";
+    if (value.includes("medium")) return "medium";
+    return "low";
+  }
+
+  function renderPrediction(data) {
+    const label = data.label || "Waiting...";
+    const score = Number(data.score || 0);
+    const percent = Math.round(score * 100);
+    const accepted = !!data.accepted;
+
+    liveLabel.textContent = label.replace(/\b\w/g, c => c.toUpperCase());
+    liveScore.textContent = `${percent}%`;
+    liveTime.textContent = data.timestamp || "--";
+    updateRing(score);
+
+    if (accepted && data.label) {
+      predictionStatus.textContent = "Confident detection";
+      predictionStatus.className = "prediction-status active";
+    } else {
+      predictionStatus.textContent = "Below confidence threshold";
+      predictionStatus.className = "prediction-status neutral";
+    }
+  }
+
+  function renderAlerts(alerts) {
+    if (!alerts || alerts.length === 0) {
+      alertsList.innerHTML = `<div class="empty-state">No alerts yet. Start detection to begin monitoring.</div>`;
+      alertCount.textContent = "0";
+      return;
+    }
+
+    alertsList.innerHTML = alerts.map(alert => `
+      <div class="alert-card ${getPriorityClass(alert.priority)}">
+        <div>
+          <div class="alert-title">${alert.sound}</div>
+          <div class="alert-subtitle">
+            ${alert.priority} priority
+            ${alert.score !== undefined ? `• ${Math.round(alert.score * 100)}% confidence` : ""}
+          </div>
+        </div>
+        <div class="alert-time">${alert.time}</div>
+      </div>
+    `).join("");
+
+    alertCount.textContent = alerts.length;
+  }
+
+  async function fetchLatestPrediction() {
+    try {
+      const res = await fetch("/latest_prediction");
+      const data = await res.json();
+      if (!data.error) renderPrediction(data);
+    } catch (err) {
+      console.error("Prediction fetch failed:", err);
+    }
+  }
+
+  async function fetchAlerts() {
+    try {
+      const res = await fetch("/alerts_feed");
+      const data = await res.json();
+      if (!data.error) renderAlerts(data.alerts || []);
+    } catch (err) {
+      console.error("Alerts fetch failed:", err);
+    }
+  }
+
+  document.getElementById("start-btn").addEventListener("click", async () => {
+    await fetch("/start_detection", { method: "POST" });
+    fetchLatestPrediction();
+    fetchAlerts();
+  });
+
+  document.getElementById("stop-btn").addEventListener("click", async () => {
+    await fetch("/stop_detection", { method: "POST" });
+  });
+
+  fetchLatestPrediction();
+  fetchAlerts();
+
+  setInterval(fetchLatestPrediction, 1500);
+  setInterval(fetchAlerts, 2500);
+</script>
+
+{% endblock %}
