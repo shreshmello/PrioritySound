@@ -1,4 +1,4 @@
-![Logo](docs/logo.png)
+![Logo](docs/PrioritySoundLogo.png)
 
 # PrioritySound -– Real-Time Sound Awareness for the Deaf and Hard-of-Hearing
 
