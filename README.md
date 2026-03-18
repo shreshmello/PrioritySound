@@ -1,6 +1,6 @@
-![Logo](docs/logo.png)
+![Logo](docs/PrioritySoundLogo.png)
 
-# PrioritySound - AI-Powered Real-Time Environment Audio Detection Hearing skdjfdjskf
+# PrioritySound - AI-Powered Real-Time Environment Audio Detection Hearing
 
 ## The Problem
 
