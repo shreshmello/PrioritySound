@@ -34,12 +34,11 @@ Priority Sound is built by integrating...
 - Machine Learning Model: Sound classification
 
 ## How It Works
-
-1. PrioritySound uses machine learning to:
-2. Detect live audio input from a microphone
-3. Classify sounds into categories
-4. Assign priority levels (Emergency, High, Medium, Low)
-5. Display alerts in real time
+ PrioritySound uses machine learning to:
+1. Detect live audio input from a microphone
+2. Classify sounds into categories
+3. Assign priority levels (Emergency, High, Medium, Low)
+4. Display alerts in real time
 
 ## Audio Classification
 
