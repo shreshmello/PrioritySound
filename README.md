@@ -1,4 +1,5 @@
 PrioritySound - AI-Powered Real-Time Sound Prioritization for Accessibility 
+
 ~ The Problem ~
 Many critical sounds — such as alarms, sirens, knocking, or a baby crying — can go unnoticed. This can create safety risks and increase stress, especially for individuals with hearing impairments.
  - Current solutions often:
@@ -6,13 +7,15 @@ Many critical sounds — such as alarms, sirens, knocking, or a baby crying — 
  - Provide delayed notifications
  - Do not offer a clear visual dashboard
  - Feel outdated or difficult to use
-PrioritySound addresses these gaps by combining AI classification with a clean dashboard interface. 
+PrioritySound addresses these gaps by combining AI classification with a clean dashboard interface.
+
 ~ Our Solution ~
 PrioritySound uses machine learning to:
  - Detect live audio input from a microphone
  - Classify sounds into categories
  - Assign priority levels (Emergency, High, Medium, Low)
  - Display alerts in real time
+
 ~ Key Features ~
 1. Live Sound detection - constantly monitors microphone input to analyze sounds consistently
 2. Machine Learning Classification - using trained models, the software can indetify and label sounds
@@ -20,6 +23,7 @@ PrioritySound uses machine learning to:
 4. Real Time Dashboard - since this software is aimed towards audibly challenged or disabled people, we decided to focus in on the visual alerts by having a dashboard that can display alerts, status, and activity
 5. AR Visual Sound Mapping – overlays directional alerts onto a live webcam feed, helping users visually identify where critical sounds are coming from.
 6. Modes - adjusts priorities and alerts based on user context
+   
 ~ Software Technology ~
 Priority Sound is built by integrating...
  - CSS: for UI design and styling
@@ -27,12 +31,14 @@ Priority Sound is built by integrating...
  - Javascript: Frontend
  - Python: backend
  - Machine Learning Models: Sound classification
+   
 ~ How It Works ~
 1. PrioritySound uses machine learning to:
 2. Detect live audio input from a microphone
 3. Classify sounds into categories
 4. Assign priority levels (Emergency, High, Medium, Low)
 5. Display alerts in real time
+   
 ~ Augumented Reality Sound Mapping ~
 Includes a web-based Augmented Reality (AR) feature that visually maps detected sounds onto the user’s environment in real time. Using the device’s webcam, the system overlays directional alerts on the screen to indicate where a sound is coming from.
 The AR System:
@@ -43,6 +49,7 @@ The AR System:
 For Example:
 🔴 A detected siren will display a red alert on the side of the screen where it is coming from.
 🟡 A door knock will appear as a yellow notification in the corresponding zone.
+
 ~ Modes ~
 PrioritySound includes customizable environment modes that automatically adjust sound prioritization based on the user’s setting. Each mode is designed for real-world safety and convenience. Users can choose which mode they prefer if they want to. This is designed to appeal to various different demographics and pyschographics and work for various different settings and appeals.
 Available Modes:
