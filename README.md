@@ -30,8 +30,8 @@ Priority Sound is built by integrating...
 - CSS: for UI design and styling
 - HTML: page structure
 - Javascript: Frontend
-- Python: backend
-- Machine Learning Models: Sound classification
+- Python: Backend
+- Machine Learning Model: Sound classification
 
 ## How It Works
 
