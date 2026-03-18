@@ -221,7 +221,11 @@ def logout():
 @app.route("/")
 def landing():
     return redirect("/login")
-
+@app.route("/ar")
+def ar_view():
+    if "user_id" not in session:
+        return redirect("/login")
+    return render_template("ar.html")
 
 @app.route("/start_dashboard")
 def start_dashboard():
