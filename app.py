@@ -177,10 +177,7 @@ def start_background_detection(user_id):
 def stop_background_detection():
     stop_event.set()
 
-
-# ----------------------
-# AUTH ROUTES
-# ----------------------
+# Auth Routes
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -220,10 +217,7 @@ def logout():
     stop_background_detection()
     return redirect("/login")
 
-
-# ----------------------
-# DASHBOARD
-# ----------------------
+# Dashboard
 @app.route("/")
 def landing():
     return redirect("/login")
@@ -252,10 +246,7 @@ def dashboard():
         mode=user.mode or "Custom"
     )
 
-
-# ----------------------
-# PREFERENCES
-# ----------------------
+# Preferences
 @app.route("/preferences", methods=["GET", "POST"])
 def preferences():
     if "user_id" not in session:
@@ -276,10 +267,7 @@ def preferences():
 
     return render_template("preferences.html", sounds=AVAILABLE_SOUNDS)
 
-
-# ----------------------
-# MODES
-# ----------------------
+# Modes
 @app.route("/modes", methods=["GET", "POST"])
 def modes():
     if "user_id" not in session:
@@ -297,21 +285,14 @@ def modes():
 
     return render_template("mode.html", modes=MODES.keys(), current_mode=user.mode or "Custom")
 
-
-# ----------------------
-# HISTORY / ANALYTICS
-# ----------------------
+# History/analytics of user
 @app.route("/history")
 def history():
     if "user_id" not in session:
         return redirect("/login")
 
     return render_template("history.html", alerts=alerts_feed)
-
-
-# ----------------------
-# DETECTION API
-# ----------------------
+# detection API
 @app.route("/start_detection", methods=["POST"])
 def start_detection():
     if "user_id" not in session:
