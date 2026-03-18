@@ -100,7 +100,7 @@ Each mode automatically adjusts priority levels, alert styles, and filters out l
 ## Technologies Used
 
 - **Backend**: Flask, SQLAlchemy
-- **Machine Learning**: Transformers, PyTorch, NumPy
+- **Machine Learning**: Transformers, TesorFlow, NumPy
 - **Audio Processing**: SoundDevice
 - **Frontend**: HTML, CSS, JavaScript
 
