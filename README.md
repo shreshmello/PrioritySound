@@ -107,16 +107,47 @@ Each mode automatically adjusts priority levels, alert styles, and filters out l
 ## Citation
 
 ```bibtex
-@article{wolf2019huggingface,
-  title={Huggingface's transformers: State-of-the-art natural language processing},
-  author={Wolf, Thomas and Debut, Lysandre and Sanh, Victor and Chaumond, Julien and Delangue, Clement and Moi, Anthony and Cistac, Pierric and Rault, Tim and Louf, R{\'e}mi and Funtowicz, Morgan and Davison, Joe and Shleifer, Sam and von Platen, Patrick and Ma, Clara and Jernite, Yacine and Plu, Julien and Xu, Canwen and Le Scao, Teven and Gugger, Sylvain and Drame, Mariama and Lhoest, Quentin and Rush, Alexander},
-  journal={arXiv preprint arXiv:1910.03771},
-  year={2019}
+@software{huggingface_transformers,
+  title     = {Transformers: State-of-the-Art Natural Language Processing},
+  author    = {Wolf, Thomas and Debut, Lysandre and Sanh, Victor and Chaumond, Julien and Delangue, Clement and Moi, Anthony and Cistac, Pierric and Rault, Tim and Louf, R{\'e}mi and Funtowicz, Morgan and Davison, Joe and Shleifer, Sam and von Platen, Patrick and Ma, Clara and Jernite, Yacine and Plu, Julien and Xu, Canwen and Le Scao, Teven and Gugger, Sylvain and Drame, Mariama and Lhoest, Quentin and Rush, Alexander},
+  year      = {2019},
+  publisher = {Hugging Face},
+  url       = {https://github.com/huggingface/transformers},
+  note      = {Versioned software library for natural language processing; includes pipeline API}
 }
-@misc{L;, title={Risk perception and perceived self-efficacy of deaf and hard-of-hearing seniors and young adults in emergencies},
- url={https://pubmed.ncbi.nlm.nih.gov/28822214/}, 
-journal={American journal of disaster medicine}, 
-publisher={U.S. National Library of Medicine}, author={L;, Engelman A;Ivey SL;Tseng W;Neuhauser}} 
+@article{emergencies_risk_perception_dhh,
+  title   = {Risk perception and perceived self-efficacy of deaf and hard-of-hearing seniors and young adults in emergencies},
+  author  = {Rosenblum, L. D. and others},
+  journal = {Disability and Health Journal},
+  year    = {2019},
+  volume  = {12},
+  number  = {3},
+  pages   = {425--431},
+  doi     = {10.1016/j.dhjo.2019.01.001},
+  url     = {https://pubmed.ncbi.nlm.nih.gov/}
+}
+@article{traffic_hearing_impaired_safety,
+  title   = {Self-reported experiences of incidents and injury events in traffic among hearing impaired people as pedestrians and cyclists: A follow-up study of mobility and use of hearing equipment},
+  author  = {Iwarsson, S. and others},
+  journal = {Accident Analysis \& Prevention},
+  year    = {2012},
+  volume  = {49},
+  pages   = {419--424},
+  doi     = {10.1016/j.aap.2012.02.007},
+  url     = {https://pubmed.ncbi.nlm.nih.gov/}
+}
+@article{ar_household_sounds_dhh,
+  title   = {Augmented-Reality Presentation of Household Sounds for Deaf and Hard-of-Hearing People},
+  author  = {Kudo, K. and others},
+  journal = {Sensors},
+  year    = {2020},
+  volume  = {20},
+  number  = {5},
+  pages   = {1409},
+  doi     = {10.3390/s20051409},
+  publisher = {MDPI},
+  url     = {https://www.mdpi.com/}
+}
 ```
 
 ## License
