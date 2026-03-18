@@ -1,33 +1,28 @@
-![Logo](docs/PrioritySoundLogo.png)
+![Logo](docs/logo.png)
 
-# PrioritySound - AI-Powered Real-Time Environment Audio Detection Hearing
+# PrioritySound -– Real-Time Sound Awareness for the Deaf and Hard-of-Hearing
 
-## The Problem
+## Problem Statement 
 
-Many critical sounds — such as alarms, sirens, knocking, or a baby crying — can go unnoticed. This can create safety risks and increase stress, especially for individuals with hearing impairments.
-- Current solutions often:
-- Lack intelligent prioritization
-- Provide delayed notifications
-- Do not offer a clear visual dashboard
-- Feel outdated or difficult to use
-PrioritySound addresses these gaps by combining AI classification with a clean dashboard interface.
+Over 1.5 billion people worldwide experience some degree of hearing loss, with many facing significant challenges in perceiving critical environmental sounds. These sounds—such as alarms, sirens, door knocks, or a baby crying—play an essential role in safety, awareness, and daily functioning. Existing assistive solutions often fall short because they:
+- Treat all sounds equally without prioritizing urgency
+- Deliver delayed or unreliable notifications
+- Lack intuitive, real-time visual interfaces
+- Do not provide spatial awareness of where sounds originate
 
-## Our Solution
+As a result, Deaf and Hard-of-Hearing individuals may miss time-sensitive auditory cues, increasing safety risks, reducing independence, and causing stress in everyday situations.
 
-PrioritySound uses machine learning to:
-- Detect live audio input from a microphone
-- Classify sounds into categories
-- Assign priority levels (Emergency, High, Medium, Low)
-- Display alerts in real time
+There is a need for a system that can intelligently detect, prioritize, and visually represent environmental sounds in real time, while also conveying where those sounds are coming from in a clear and accessible way. 
 
-## Key Features
+## Our Solution and Key Features
 
-1. Live Sound detection - constantly monitors microphone input to analyze sounds consistently
-2. Machine Learning Classification - using trained models, the software can identify and label sounds
-3. Priority Based Alerts - sounds are categorized as emergency, high, medium, low
-4. Real Time Dashboard - since this software is aimed towards audibly challenged or disabled people, we decided to focus in on the visual alerts by having a dashboard that can display alerts, status, and activity
-5. AR Visual Sound Mapping – overlays directional alerts onto a live webcam feed, helping users visually identify where critical sounds are coming from.
-6. Modes - adjusts priorities and alerts based on user context
+PrioritySound uses machine learning to deliver intelligent sound detection and accessibility:
+- **Live Sound Detection**: Constantly monitors microphone input to analyze sounds consistently
+- **Machine Learning Classification**: Uses trained deep learning models to identify and label environmental sounds
+- **Priority-Based Alerts**: Categorizes sounds as Emergency, High, Medium, or Low based on safety risk
+- **Real-Time Dashboard**: Displays visual alerts, status, and activity history optimized for deaf and hard-of-hearing users
+- **AR Visual Sound Mapping**: Overlays directional alerts onto a live webcam feed to help users locate sounds
+- **Customizable Modes**: Adjusts priorities and alert styles based on user context (Parent, Outside, School, Home)
 
 ## Software Technology
 
@@ -46,36 +41,35 @@ Priority Sound is built by integrating...
 4. Assign priority levels (Emergency, High, Medium, Low)
 5. Display alerts in real time
 
+## Audio Classification
+
+PrioritySound uses machine-learning to classify environmental sounds in real time. Built on transformer-based architecture, the system:
+- Analyzes audio spectral features to identify sound types
+- Assigns confidence scores to each classification
+- Automatically prioritizes sounds based on urgency levels (Emergency, High, Medium, Low)
+- Continuously learns and adapts to new environmental contexts
+
+The model is trained on diverse sound datasets including alarms, sirens, appliances, and human-generated sounds, ensuring reliable detection across various environments.
+
 ## Augmented Reality Sound Mapping
 
-Includes a web-based Augmented Reality (AR) feature that visually maps detected sounds onto the user’s environment in real time. Using the device’s webcam, the system overlays directional alerts on the screen to indicate where a sound is coming from.
-
-The AR System:
-- Detects and classifies environmental sounds using machine learning
+A web-based AR feature that overlays detected sounds onto a live webcam feed. The system:
 - Estimates sound direction (Left, Center, Right)
 - Displays color-coded visual indicators based on urgency
-- Provides spatial awareness for deaf and hard-of-hearing users
-
-For Example:
-A detected siren will display a red alert on the side of the screen where it is coming from.
-A door knock will appear as a yellow notification in the corresponding zone.
+- Example: Red alert for sirens, yellow notification for door knocks
+- Provides spatial awareness for users to locate sounds in their environment
 
 ## Modes
 
-PrioritySound includes customizable environment modes that automatically adjust sound prioritization based on the user’s setting. Each mode is designed for real-world safety and convenience. Users can choose which mode they prefer if they want to. This is designed to appeal to various different demographics and psychographics and work for various different settings and appeals.
+PrioritySound includes four customizable environment modes that adjust sound prioritization based on context:
 
 Available Modes:
-- Parent Mode: Prioritizes baby crying, glass breaking, door knocks, and smoke alarms.
-- Outside Mode: Prioritizes emergency vehicle sirens, car horns, and traffic-related alerts.
-- School Mode: Prioritizes lockdown alarms, fire alarms, and school bell signals.
-- Home Mode: Prioritizes doorbells, appliance alarms, smoke detectors, and security alerts.
+- **Parent Mode**: Prioritizes baby crying, glass breaking, door knocks, and smoke alarms
+- **Outside Mode**: Prioritizes emergency sirens, car horns, and traffic alerts
+- **School Mode**: Prioritizes lockdown alarms, fire alarms, and school bells
+- **Home Mode**: Prioritizes doorbells, appliance alarms, and security alerts
 
-Each Mode:
-- Automatically adjusts priority levels (Emergency, High, Medium, Low) and/or allows users to change their priority levels as well
-- Changes visual alert style based on urgency
-- Filters out low-importance environmental noise
-
-This ensures users receive only the most relevant and critical alerts for their environment.
+Each mode automatically adjusts priority levels, alert styles, and filters out low-importance noise for relevant, timely alerts.
 
 ## Installation
 
@@ -119,6 +113,10 @@ This ensures users receive only the most relevant and critical alerts for their 
   journal={arXiv preprint arXiv:1910.03771},
   year={2019}
 }
+@misc{L;, title={Risk perception and perceived self-efficacy of deaf and hard-of-hearing seniors and young adults in emergencies},
+ url={https://pubmed.ncbi.nlm.nih.gov/28822214/}, 
+journal={American journal of disaster medicine}, 
+publisher={U.S. National Library of Medicine}, author={L;, Engelman A;Ivey SL;Tseng W;Neuhauser}} 
 ```
 
 ## License
