@@ -1,6 +1,6 @@
 ![Logo](docs/logo.png)
 
-# PrioritySound - AI-Powered Real-Time Sound Prioritization for Accessibility
+# PrioritySound - AI-Powered Real-Time Environment Audio Detection Hearing skdjfdjskf
 
 ## The Problem
 
