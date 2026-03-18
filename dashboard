@@ -20,7 +20,7 @@
     <h3>Live Detection Feed</h3>
     <div id="alerts-feed">
       {% for alert in alerts %}
-        <div class="alert-card" style="border-left: 5px solid {{ alert.color }}">
+        <div class="alert-card" style="border-left: 5px solid {{ white-space: inherit; }}">
           <span class="alert-time">{{ alert.time }}</span>
           <span class="alert-sound">{{ alert.sound }}</span>
           <span class="alert-priority {{ alert.priority }}">{{ alert.priority|upper }}</span>

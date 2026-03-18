@@ -1,31 +1,15 @@
-
-{% extends "base.html" %}
-  {% block content %}
-<h2>Welcome {{email}}!</h2>
-<p>Current Mode: {{mode}}</p>
-
-<div class = 'alerts-feed'>
-    <h3>Recent Alerts</h3>
-    {% if alerts %}
-    <ul>
-      {% for alert in alerts %}
-        <li>
-          <strong>{{ alert.sound }}</strong> - {{ alert.priority }} ({{ alert.timestamp }})
-        </li>
-      {% endfor %}
-    </ul>
-  {% else %}
-    <p>No alerts yet.</p>
-{% endif %}
+<div class="card">
+  <h3>Live Sound Detection</h3>
+  <p><strong>Prediction:</strong> <span id="live-label">Waiting...</span></p>
+  <p><strong>Confidence:</strong> <span id="live-score">-</span></p>
+  <p><strong>Time:</strong> <span id="live-time">-</span></p>
 </div>
 
-<div class = 'record'>
-    <form method = 'POST' action = "{{url_for('simulate_alert_route')}}">
-    <button type = 'submit' class = 'recordBtn'>Record Audio</button>
-    </form>
-
+<div class="card">
+  <h3>Recent Alerts</h3>
+  <ul id="alerts-list">
+    {% for alert in alerts %}
+      <li>{{ alert }}</li>
+    {% endfor %}
+  </ul>
 </div>
-{% endblock %}
-
-
-

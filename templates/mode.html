@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Modes</title>
+</head>
+<body>
+    <h1>Choose a Mode</h1>
+    <p>Current mode: {{ current_mode }}</p>
+
+    <form method="POST">
+        {% for mode in modes %}
+            <div>
+                <label>
+                    <input type="radio" name="mode" value="{{ mode }}" {% if mode == current_mode %}checked{% endif %}>
+                    {{ mode }}
+                </label>
+            </div>
+        {% endfor %}
+        <button type="submit">Save Mode</button>
+    </form>
+
+    <a href="/dashboard">Back to Dashboard</a>
+</body>
+</html>

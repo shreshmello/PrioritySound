@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>History</title>
+</head>
+<body>
+    <h1>Alert History</h1>
+
+    {% if alerts %}
+        <ul>
+        {% for alert in alerts %}
+            <li>{{ alert.time }} - {{ alert.sound }} - {{ alert.priority }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No alerts yet.</p>
+    {% endif %}
+
+    <a href="/dashboard">Back to Dashboard</a>
+</body>
+</html>
