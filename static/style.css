@@ -1,5 +1,5 @@
 
-/* GLOBAL STYLING */
+/* styling */
 body {
   margin: 0;
   padding: 0;
@@ -8,12 +8,12 @@ body {
   font-family: 'Segoe UI', Arial, sans-serif;
 }
 
-/* Smooth transitions everywhere */
+/* smooth transitions */
 * {
   box-sizing: border-box;
   transition: all 0.2s ease-in-out;
 }
-/* NAVBAR */
+// navigation bar //
 
 .navbar {
   display: flex;
@@ -41,7 +41,7 @@ body {
   color: #7fff7f;
 }
 
-/* PROFILE DROPDOWN */
+/* profile dropdown */
 
 .profile-dropdown {
   position: relative;
@@ -76,7 +76,7 @@ body {
   color: #111;
 }
 
-/* CARDS */
+/* Cards */
 
 .card {
   background-color: #1a1f29;
@@ -86,7 +86,7 @@ body {
   box-shadow: 0 10px 25px rgba(0,0,0,0.25);
 }
 
-/* BUTTONS */
+/* buttons */
 
 .button {
   display: inline-block;
@@ -106,7 +106,7 @@ body {
   box-shadow: 0 5px 15px rgba(0,0,0,0.4);
 }
 
-/* ALERT FEED */
+/* Alert Feed */
 
 .alert-card {
   display: flex;
@@ -137,7 +137,7 @@ body {
 }
 
 
-/* LIVE STATUS DOT */
+/* Live Status Dot */
 
 .live-dot {
   width: 14px;
@@ -155,8 +155,7 @@ body {
   100% { transform: scale(1); opacity: 1; }
 }
 
-
-/* FORMS / INPUTS */
+/* Forms / inputs */
 
 input,
 select {
@@ -176,7 +175,7 @@ select:focus {
   border-color: #7fff7f;
 }
 
-/* SOUND BARS (for logo section) */
+/* sounds bars (for logo section) */
 
 .sound-bars {
   display: flex;
@@ -210,4 +209,78 @@ select:focus {
 @keyframes bounce {
   0%, 100% { transform: scaleY(1); }
   50% { transform: scaleY(1.4); }
+}
+
+/* background */
+body {
+    background: radial-gradient(circle at top, #14142a, #050510);
+    font-family: Arial, sans-serif;
+}
+
+/* card container */
+.card {
+    position: relative;
+    padding: 40px;
+    border-radius: 16px;
+    background: #141428;
+    color: white;
+    width: 350px;
+    text-align: center;
+    margin: 40px auto;
+}
+
+/* animated border */
+.card::before {
+    content: "";
+    position: absolute;
+
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+
+    border-radius: 18px;
+
+    background: linear-gradient(
+        90deg,
+        #FF6B6B,   /* pastel red */
+        #FFD93D,   /* pastel yellow */
+        #6BCB77,   /* pastel green */
+        #FF6B6B
+    );
+
+    background-size: 300% 300%;
+    animation: borderMove 6s linear infinite;
+    z-index: -1;
+}
+
+/* glow */
+.card::after {
+    content: "";
+    position: absolute;
+
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+
+    border-radius: 20px;
+
+    background: linear-gradient(
+        90deg,
+        #FF6B6B,
+        #FFD93D,
+        #6BCB77,
+        #FF6B6B
+    );
+
+    background-size: 300% 300%;
+    animation: borderMove 6s linear infinite;
+    filter: blur(20px);
+    z-index: -2;
+}
+
+@keyframes borderMove {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 300% 50%; }
 }
