@@ -179,7 +179,7 @@ Each mode filters out low-importance noise and ensures users receive the most re
 
 1. Clone the repository:
    ```
-   git clone https://github.com/shreshmello/software-design-code.git
+   git clone https://github.com/shreshmello/PrioritySound.git
    cd software-design-code
    ```
 
