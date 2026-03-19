@@ -624,6 +624,12 @@ a {
   border: 1px solid var(--border);
 }
 
+.clicked{
+  background: rgba(179, 71, 71, 0.634);
+  color: var(--text);
+
+  border: 1px solid var(--border);
+}
 
 /* button container */
 .hero-actions {
