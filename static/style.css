@@ -47,6 +47,22 @@
   box-sizing: border-box;
 }
 
+@keyframes neon-glow {
+  0% { box-shadow: 0 0 10px rgba(255, 0, 0, 0.3), 0 0 20px rgba(255, 0, 0, 0.2); }
+  25% { box-shadow: 0 0 10px rgba(255, 255, 0, 0.3), 0 0 20px rgba(255, 255, 0, 0.2); }
+  50% { box-shadow: 0 0 10px rgba(0, 255, 0, 0.3), 0 0 20px rgba(0, 255, 0, 0.2); }
+  75% { box-shadow: 0 0 10px rgba(255, 0, 0, 0.3), 0 0 20px rgba(255, 0, 0, 0.2); }
+  100% { box-shadow: 0 0 10px rgba(255, 255, 0, 0.3), 0 0 20px rgba(255, 255, 0, 0.2); }
+}
+
+.neon-bar {
+  height: 2px;
+  background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #60a5fa);
+  margin: 10px 0;
+  border-radius: 1px;
+  animation: neon-glow 4s infinite;
+}
+
 
 /* 
    PAGE BACKGROUND and BASE FONT
@@ -105,7 +121,12 @@ a {
 
   border-bottom: 1px solid var(--border);
 }
-
+.site-logo {
+  height: 48px;
+  width: auto;
+  display: block;
+  border-radius: 8px;
+}
 
 /* 
    APP LOGO 
@@ -212,10 +233,17 @@ a {
   border: 1px solid var(--border);
 
   box-shadow: var(--shadow);
-
-  margin-bottom: 24px;
+}
+.hero-title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
+.dashboard-logo {
+  height: 240px;
+  width: auto;
+}
 
 /* label main   */
 .eyebrow {
@@ -248,6 +276,24 @@ a {
   gap: 12px;
   margin-top: 16px;
   flex-wrap: wrap;
+}
+
+.hero-features {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0 0 0;
+}
+
+.hero-features li {
+  padding: 4px 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.hero-features li:before {
+  content: "✓";
+  color: var(--green);
+  margin-right: 8px;
 }
 
 .status-pill,
@@ -583,6 +629,13 @@ a {
 /* button container */
 .hero-actions {
   display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.button-group {
+  display: flex;
   gap: 12px;
   flex-wrap: wrap;
 }
@@ -762,4 +815,84 @@ select:focus {
   position: absolute;
   top: 0;
   left: 0;
+}
+
+/* ===============================
+   FEEDBACK FORM
+   =============================== */
+
+.feedback-form {
+  max-width: 500px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-soft);
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.2);
+}
+
+.success-message {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.success-message p {
+  margin-bottom: 20px;
+  color: var(--green);
+}
+
+/* ===============================
+   FEEDBACK ADMIN
+   =============================== */
+
+.feedback-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.feedback-item {
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-soft);
+}
+
+.feedback-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.timestamp {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.feedback-message {
+  color: var(--text);
+  line-height: 1.5;
 }

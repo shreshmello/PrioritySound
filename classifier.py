@@ -1,3 +1,7 @@
+# Sound Classification Module
+# Uses Hugging Face transformers for audio classification
+# Maps model predictions to our custom sound categories
+
 import csv
 import time
 import sounddevice as sd
@@ -5,6 +9,7 @@ from transformers import pipeline
 
 
 class SoundClassifier:
+    """Machine learning model for classifying environmental sounds"""
     def __init__(
         self,
         labels_file: str = "labels.csv",
@@ -30,6 +35,7 @@ class SoundClassifier:
         }
 
     def _load_labels(self):
+        """Load sound category labels from CSV file"""
         labels = []
         with open(self.labels_file, newline="", encoding="utf-8") as f:
             reader = csv.DictReader(f)
@@ -40,9 +46,11 @@ class SoundClassifier:
         return labels
 
     def get_labels(self):
+        """Get list of available sound categories"""
         return self.labels
 
     def record_audio(self):
+        """Record audio from microphone for specified duration"""
         audio = sd.rec(
             int(self.duration * self.sample_rate),
             samplerate=self.sample_rate,
@@ -63,6 +71,7 @@ class SoundClassifier:
         return None
 
     def classify_audio(self, audio):
+        """Classify audio data using the ML model"""
         raw_results = self.classifier(audio, top_k=10)
 
         mapped_results = []
@@ -94,10 +103,12 @@ class SoundClassifier:
         return mapped_results[:5]
 
     def classify_once(self):
+        """Record and classify a single audio sample"""
         audio = self.record_audio()
         return self.classify_audio(audio)
 
     def classify_continuously(self, callback, stop_event, min_confidence=0.5):
+        """Continuously classify audio in a loop until stopped"""
         while not stop_event.is_set():
             try:
                 results = self.classify_once()

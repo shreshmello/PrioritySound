@@ -1,14 +1,26 @@
+<!-- Dashboard page - main interface for sound detection and monitoring -->
 {% extends "base.html" %}
 {% block content %}
 
+<!-- Main dashboard container -->
 <div class="dashboard-shell">
+  <!-- Animated neon accent bar above hero -->
+  <div class="neon-bar"></div>
+
+  <!-- Hero section with title, status, and controls -->
   <section class="hero-panel">
+    <!-- Left side: title and description -->
     <div>
-      <p class="eyebrow">Live Monitoring</p>
-      <h1>PrioritySound Dashboard</h1>
+      <div class="hero-title">
+        <div>
+          <p class="eyebrow">Live Monitoring</p>
+          <h1>PrioritySound Dashboard</h1>
+        </div>
+      </div>
       <p class="hero-subtext">
         Monitor important sounds in real time and show only the most likely classification.
       </p>
+      <!-- Status indicators and mode display -->
       <div class="hero-meta">
         <span class="status-pill">
           <span class="live-dot"></span>
@@ -16,21 +28,38 @@
         </span>
         <span class="mode-pill">Mode: {{ mode }}</span>
       </div>
+
+      <!-- Feature highlights list -->
+      <ul class="hero-features">
+        <li>Real-time sound detection</li>
+        <li>Priority-based alerts</li>
+        <li>Customizable modes</li>
+        <li>Historical tracking</li>
+      </ul>
     </div>
 
+    <!-- Right side: logo and control buttons -->
     <div class="hero-actions">
-      <button class="button button-primary" id="start-btn">Start Detection</button>
-      <button class="button button-secondary" id="stop-btn">Stop Detection</button>
+      <img src="{{ url_for('static', filename='PrioritySoundLogo.png') }}"
+          alt="PrioritySound Logo"
+          class="dashboard-logo">
+      <div class="button-group">
+        <button class="button button-primary" id="start-btn">Start Detection</button>
+        <button class="button button-secondary" id="stop-btn">Stop Detection</button>
+      </div>
     </div>
   </section>
 
+  <!-- Main dashboard grid with cards -->
   <div class="dashboard-grid">
+    <!-- Top sound classification card -->
     <section class="card prediction-card">
       <div class="section-head">
         <h3>Top Classification</h3>
         <span id="live-time" class="muted">--</span>
       </div>
 
+      <!-- Circular progress indicator -->
       <div class="prediction-main">
         <div class="prediction-ring">
           <svg viewBox="0 0 120 120">
@@ -51,11 +80,13 @@
         </div>
       </div>
 
+      <!-- Augmented Reality sound localization card -->
       <section class="card ar-card" style="margin-top: 20px;">
         <div class="section-head">
           <h3>Sound Localization (AR)</h3>
           <span class="muted">Optional camera view with directional arrows</span>
         </div>
+        <!-- AR camera feed with overlay canvas -->
         <div id="ar-section" style="position:relative; width:100%; height:300px; background:black; margin-top:10px;">
           <canvas id="overlay"></canvas>
           <video id="videoFeed" autoplay playsinline
@@ -68,6 +99,7 @@
       </section>
     </section>
 
+    <!-- Session summary card -->
     <section class="card summary-card">
       <div class="section-head">
         <h3>Session Snapshot</h3>
@@ -121,6 +153,7 @@
 
 <script src="{{ url_for('static', filename='ar.js') }}"></script>
 
+<!-- JavaScript for real-time dashboard updates -->
 <script>
   const liveLabel = document.getElementById("live-label");
   const liveScore = document.getElementById("live-score");

@@ -1,16 +1,22 @@
+<!-- Loading screen before dashboard - animated bars with redirect -->
 {% extends "base.html" %}
 {% block content %}
+
+<!-- Loading animation container -->
 <div class="loading-container">
+  <!-- Animated bars representing sound detection levels -->
   <div class="loading-bars">
     <div class="bar red"></div>
     <div class="bar yellow"></div>
     <div class="bar green"></div>
   </div>
+  <!-- Loading text message -->
   <div class="loading-text">Loading PrioritySound…</div>
 </div>
 
+<!-- JavaScript for loading animation and redirect -->
 <script>
-  // random live animation for bars moving for effect
+  // Random live animation for bars moving for visual effect
   const bars = document.querySelectorAll('.loading-bars .bar');
   function animateBars(){
     bars.forEach(bar => {
@@ -18,9 +24,11 @@
       bar.style.height = randomHeight + '%';
     });
   }
+  // Animate bars every 300ms
   setInterval(animateBars, 300);
 
   // Redirect to dashboard after 2 seconds
   setTimeout(()=> { window.location.href = "/dashboard"; }, 2000);
 </script>
+
 {% endblock %}

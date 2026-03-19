@@ -1,4 +1,8 @@
-from flask import Flask, render_template, request, redirect, session, jsonify
+# PrioritySound Web Application
+# A Flask-based web app for real-time sound detection and emergency alerting
+# Uses machine learning to classify sounds and notify users based on customizable priorities
+
+from flask import Flask, render_template, request, redirect, session, jsonify, url_for
 from werkzeug.security import generate_password_hash, check_password_hash
 from models import db, User
 from utils import simulate_alert
@@ -41,6 +45,8 @@ active_detection_context = {
     "preferences": {}
 }
 
+feedback_list = []
+
 AVAILABLE_SOUNDS = [
     "baby crying",
     "doorbell ringing",
@@ -60,6 +66,7 @@ MODES = {
 
 
 def get_classifier():
+    """Initialize and return the sound classifier singleton"""
     global classifier
     with classifier_lock:
         if classifier is None:
@@ -72,20 +79,13 @@ def get_classifier():
 
 
 def normalize_prediction(data):
-    """
-    Always return only the most likely prediction.
-    Works whether classifier returns:
-    - data["label"] and data["score"]
-    - or a data["results"] list
-    """
+    """Normalize prediction results to ensure consistent format"""
     results = data.get("results", []) or []
 
     top_label = data.get("label")
     top_score = float(data.get("score", 0) or 0)
 
     if results:
-        # Accept either dicts like {"label": "...", "score": 0.92}
-        # or tuples/lists like ("label", 0.92)
         parsed = []
         for item in results:
             if isinstance(item, dict):
@@ -116,6 +116,7 @@ def normalize_prediction(data):
 
 
 def detector_callback(data):
+    """Process sound classification results and create alerts"""
     global latest_prediction, alerts_feed
 
     normalized = normalize_prediction(data)
@@ -148,6 +149,7 @@ def detector_callback(data):
 
 
 def detection_worker():
+    """Background thread function for continuous sound classification"""
     clf = get_classifier()
     clf.classify_continuously(
         callback=detector_callback,
@@ -157,6 +159,7 @@ def detection_worker():
 
 
 def start_background_detection(user_id):
+    """Start background sound detection thread for user"""
     global detection_thread
 
     user = User.query.get(user_id)
@@ -175,11 +178,13 @@ def start_background_detection(user_id):
 
 
 def stop_background_detection():
+    """Stop background sound detection"""
     stop_event.set()
 
-# Auth Routes
+# Authentication Routes
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    """Handle user registration"""
     if request.method == "POST":
         email = request.form["email"]
         password = generate_password_hash(request.form["password"])
@@ -197,6 +202,7 @@ def register():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    """Handle user login"""
     if request.method == "POST":
         email = request.form["email"]
         password = request.form["password"]
@@ -223,12 +229,14 @@ def landing():
     return redirect("/login")
 @app.route("/ar")
 def ar_view():
+    """Augmented reality view for sound visualization"""
     if "user_id" not in session:
         return redirect("/login")
     return render_template("ar.html")
 
 @app.route("/start_dashboard")
 def start_dashboard():
+    """Loading screen before dashboard"""
     if "user_id" not in session:
         return redirect("/login")
     return render_template("dashboardloading.html")
@@ -236,6 +244,7 @@ def start_dashboard():
 
 @app.route("/dashboard")
 def dashboard():
+    """Main dashboard with sound detection controls"""
     if "user_id" not in session:
         return redirect("/login")
 
@@ -253,6 +262,7 @@ def dashboard():
 # Preferences
 @app.route("/preferences", methods=["GET", "POST"])
 def preferences():
+    """Manage user sound priority preferences"""
     if "user_id" not in session:
         return redirect("/login")
 
@@ -274,6 +284,7 @@ def preferences():
 # Modes
 @app.route("/modes", methods=["GET", "POST"])
 def modes():
+    """Select predefined priority modes (Parent, Home, Work, Night)"""
     if "user_id" not in session:
         return redirect("/login")
 
@@ -292,13 +303,15 @@ def modes():
 # History/analytics of user
 @app.route("/history")
 def history():
+    """View past sound detection alerts"""
     if "user_id" not in session:
         return redirect("/login")
 
     return render_template("history.html", alerts=alerts_feed)
-# detection API
+# Sound Detection API Routes
 @app.route("/start_detection", methods=["POST"])
 def start_detection():
+    """Start real-time sound detection in background thread"""
     if "user_id" not in session:
         return jsonify({"error": "Not logged in"}), 401
 
@@ -308,6 +321,7 @@ def start_detection():
 
 @app.route("/stop_detection", methods=["POST"])
 def stop_detection():
+    """Stop ongoing sound detection"""
     if "user_id" not in session:
         return jsonify({"error": "Not logged in"}), 401
 
@@ -317,6 +331,7 @@ def stop_detection():
 
 @app.route("/latest_prediction", methods=["GET"])
 def get_latest_prediction():
+    """Get the most recent sound classification result"""
     if "user_id" not in session:
         return jsonify({"error": "Not logged in"}), 401
 
@@ -326,11 +341,42 @@ def get_latest_prediction():
 
 @app.route("/alerts_feed", methods=["GET"])
 def get_alerts_feed():
+    """Get list of recent alerts for real-time updates"""
     if "user_id" not in session:
         return jsonify({"error": "Not logged in"}), 401
 
     return jsonify({"alerts": alerts_feed})
 
+@app.route("/clear_history", methods=["POST"])
+def clear_history():
+    """Clear all stored alerts from memory"""
+    global alerts_feed
+    alerts_feed.clear()
+    return redirect(url_for("history"))
+
+@app.route("/feedback", methods=["GET", "POST"])
+def feedback():
+    """Handle user feedback submission and display form"""
+    if request.method == "POST":
+        name = request.form.get("name")
+        email = request.form.get("email")
+        message = request.form.get("message")
+        # Store feedback
+        feedback_entry = {
+            "name": name,
+            "email": email,
+            "message": message,
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
+        feedback_list.append(feedback_entry)
+        print(f"Feedback received: {feedback_entry}")
+        return render_template("feedback.html", submitted=True)
+    return render_template("feedback.html", submitted=False)
+
+@app.route("/admin/feedback")
+def view_feedback():
+    """Admin view to see all submitted feedback"""
+    return render_template("admin_feedback.html", feedback_list=feedback_list)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=3000, debug=True, threaded=True)
