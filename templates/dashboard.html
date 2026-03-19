@@ -21,6 +21,7 @@
     <div class="hero-actions">
       <button class="button button-primary" id="start-btn">Start Detection</button>
       <button class="button button-secondary" id="stop-btn">Stop Detection</button>
+      <button class = 'button button-secondary' id = 'bg-noise'>Background noise is present </button>
     </div>
   </section>
 
@@ -202,6 +203,16 @@
 
   document.getElementById("stop-btn").addEventListener("click", async () => {
     await fetch("/stop_detection", { method: "POST" });
+  });
+
+  document.getElementById('bg-noise').addEventListener("click", async() => {
+    await fetch("/set_bg_threshold", {method: "POST"});
+    if ( document.getElementById('bg-noise').classList.contains('clicked')) {
+      document.getElementById('bg-noise').classList.remove('clicked')
+    }
+    else {
+      document.getElementById('bg-noise').classList.add('clicked')
+    }
   });
 
   fetchLatestPrediction();

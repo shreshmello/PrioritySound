@@ -5,17 +5,19 @@ class DetectionBuffer:
         self.required_matches = required_matches
     def add(self, label, confidence):
         self.buffer.append((label, confidence))
-    def confirmed(self):
+    def confirmed(self, threshold):
         if len(self.buffer) < self.required_matches:
             return None
         labels = {}
         confs = {}
         for label, conf in self.buffer:
             labels[label] = labels.get(label, 0)+ 1
-            confs[label] = confs.get(conf, 0) + conf
+            confs[label] = confs.get(label, 0) + conf
         best_label = max(labels, key = labels.get)
         if labels[best_label] >= self.required_matches:
             avg_conf = confs[best_label]/labels[best_label]
+            if avg_conf < threshold:
+                return None
             return best_label, avg_conf
         return None
 

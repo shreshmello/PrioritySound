@@ -361,6 +361,12 @@ a {
   border: 1px solid var(--border);
 }
 
+.clicked {
+  background: rgba(173, 61, 61, 0.567);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
 .hero-actions {
   display: flex;
   gap: 12px;

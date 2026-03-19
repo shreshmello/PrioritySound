@@ -25,6 +25,7 @@ detection_thread = None
 stop_event = threading.Event()
 prediction_lock = threading.Lock()
 user_context_lock = threading.Lock()
+threshold = 0.5
 
 alerts_feed = []
 
@@ -117,7 +118,7 @@ def normalize_prediction(data):
 
 
 def detector_callback(data):
-    global latest_prediction, alerts_feed, buffer
+    global latest_prediction, alerts_feed, buffer, threshold
     normalized = normalize_prediction(data)
     timestamp = datetime.now().strftime("%I:%M %p")
 
@@ -127,16 +128,16 @@ def detector_callback(data):
             "timestamp": timestamp
         }
 
-    if normalized.get("accepted") and normalized.get("label"):
+    if normalized.get("label"):
         sound = normalized["label"]
         score = normalized["score"]
-        if score > 0.35:
+        if score > threshold:
             confirmed_sound = sound
             avg_conf = score
             print(avg_conf)
         else:
             buffer.add(sound, score)
-            result = buffer.confirmed()
+            result = buffer.confirmed(threshold)
             if not result:
                 return
             confirmed_sound, avg_conf = result
@@ -149,7 +150,7 @@ def detector_callback(data):
             return
 
         alert = simulate_alert(confirmed_sound, priority, timestamp)
-        alert["score"] = score
+        alert["score"] = avg_conf
 
         if not alerts_feed or alerts_feed[0].get("sound") != confirmed_sound:
             alerts_feed.insert(0, alert)
@@ -331,7 +332,16 @@ def start_detection():
     start_background_detection(session["user_id"])
     return jsonify({"status": "started"})
 
-
+@app.route('/set_bg_threshold', methods = ["POST"])
+def set_threshold():
+    global threshold
+    if threshold == 0.5:
+        threshold = 0.3
+    elif threshold == 0.3:
+        threshold = 0.5
+    else:
+        threshold  = 0.5
+    return jsonify({"threshold": threshold})
 @app.route("/stop_detection", methods=["POST"])
 def stop_detection():
     if "user_id" not in session:
