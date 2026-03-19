@@ -14,7 +14,7 @@ The goal is to improve **safety, awareness, and independence** by ensuring that 
 
 # Problem Statement
 
-Over **1.5 billion people worldwide** experience some degree of hearing loss. Many of these individuals face challenges detecting important environmental sounds such as:
+Over **1.5 billion people worldwide** experience some degree of hearing loss [^1]. Many of these individuals face challenges detecting important environmental sounds such as:
 
 - Fire alarms
 - Emergency sirens
@@ -31,7 +31,7 @@ Existing assistive technologies often fall short because they:
 - Lack clear visual interfaces
 - Do not indicate where a sound is coming from
 
-As a result, Deaf and Hard-of-Hearing individuals may miss critical auditory cues, increasing safety risks and reducing independence.
+As a result, Deaf and Hard-of-Hearing individuals may miss critical auditory cues, increasing safety risks and reducing independence [^2][^3].
 
 **PrioritySound addresses this problem by detecting, prioritizing, and visually representing important sounds in real time.**
 
@@ -127,7 +127,7 @@ This ensures reliable detection across many environments.
 
 # Augmented Reality Sound Mapping
 
-PrioritySound includes a web-based **AR visualization system** that helps users locate sounds in their environment.
+PrioritySound includes a web-based **AR visualization system** that helps users locate sounds in their environment [^4].
 
 The system:
 
@@ -204,11 +204,17 @@ Each mode filters out low-importance noise and ensures users receive the most re
 ## Technologies Used
 
 - **Backend**: Flask, SQLAlchemy
-- **Machine Learning**: Transformers, TesorFlow, NumPy
+- **Machine Learning**: Transformers, TensorFlow, NumPy
 - **Audio Processing**: SoundDevice
 - **Frontend**: HTML, CSS, JavaScript
 
 ## Citation
+
+[^1]: World Health Organization. (2021). *World report on hearing*. https://www.who.int/publications/i/item/world-report-on-hearing
+
+[^2]: Rosenblum, L. D., et al. (2019). Risk perception and perceived self-efficacy of deaf and hard-of-hearing seniors and young adults in emergencies. *Disability and Health Journal, 12*(3), 425–431. https://doi.org/10.1016/j.dhjo.2019.01.001
+
+[^4]: Kudo, K., et al. (2020). Augmented-Reality Presentation of Household Sounds for Deaf and Hard-of-Hearing People. *Sensors, 20*(5), 1409. https://doi.org/10.3390/s20051409
 
 ```bibtex
 @software{huggingface_transformers,
@@ -218,6 +224,54 @@ Each mode filters out low-importance noise and ensures users receive the most re
   publisher = {Hugging Face},
   url       = {https://github.com/huggingface/transformers},
   note      = {Versioned software library for natural language processing; includes pipeline API}
+}
+@software{flask,
+  title     = {Flask},
+  author    = {Ronacher, Armin},
+  year      = {2010},
+  publisher = {Pallets},
+  url       = {https://flask.palletsprojects.com/},
+  note      = {A lightweight WSGI web application framework}
+}
+@software{sqlalchemy,
+  title     = {SQLAlchemy},
+  author    = {Bayer, Michael},
+  year      = {2006},
+  publisher = {SQLAlchemy Authors},
+  url       = {https://www.sqlalchemy.org/},
+  note      = {The Python SQL Toolkit and Object Relational Mapper}
+}
+@software{sounddevice,
+  title     = {SoundDevice},
+  author    = {Hofmann, Matthias},
+  year      = {2016},
+  publisher = {Python Software Foundation},
+  url       = {https://python-sounddevice.readthedocs.io/},
+  note      = {Play and Record Sound with Python}
+}
+@software{pytorch,
+  title     = {PyTorch},
+  author    = {Paszke, Adam and Gross, Sam and Massa, Francisco and Lerer, Adam and Bradbury, James and Chanan, Gregory and Killeen, Trevor and Lin, Zeming and Gimelshein, Natalia and Antiga, Luca and Desmaison, Alban and Kopf, Andreas and Yang, Edward and DeVito, Zachary and Raison, Martin and Tejani, Alykhan and Chilamkurthy, Sasank and Steiner, Benoit and Fang, Lu and Bai, Junjie and Chintala, Soumith},
+  year      = {2019},
+  publisher = {Linux Foundation},
+  url       = {https://pytorch.org/},
+  note      = {An open source machine learning framework}
+}
+@software{numpy,
+  title     = {NumPy},
+  author    = {Harris, Charles R. and Millman, K. Jarrod and van der Walt, St{\'e}fan J. and Gommers, Ralf and Virtanen, Pauli and Cournapeau, David and Wieser, Eric and Taylor, James and Berg, Sebastian and Smith, Nathaniel J. and Kern, Robert and Picus, Matti and Hoyer, Stephan and van Kerkwijk, Marten H. and Brett, Matthew and Haldane, Allan and del R{\'i}o, Jaime Fern{\'a}ndez and Wiebe, Mark and Peterson, Pearu and G{\'e}rard-Marchant, Pierre and Sheppard, Kevin and Reddy, Tyler and Weckesser, Warren and Abbasi, Hameer and Gohlke, Christoph and Oliphant, Travis E.},
+  year      = {2020},
+  publisher = {NumPy Developers},
+  url       = {https://numpy.org/},
+  note      = {Fundamental package for array computing in Python}
+}
+@software{tensorflow,
+  title     = {TensorFlow},
+  author    = {Abadi, Mart{\'i}n and Agarwal, Ashish and Barham, Paul and Brevdo, Eugene and Chen, Zhifeng and Citro, Craig and Corrado, Greg S. and Davis, Andy and Dean, Jeffrey and Devin, Matthieu and Ghemawat, Sanjay and Goodfellow, Ian and Harp, Andrew and Irving, Geoffrey and Isard, Michael and Jia, Yangqing and Jozefowicz, Rafal and Kaiser, Lukasz and Kudlur, Manjunath and Levenberg, Josh and Man{\'e}, Dan and Monga, Rajat and Moore, Sherry and Murray, Derek and Olah, Chris and Schuster, Mike and Shlens, Jonathon and Steiner, Benoit and Sutskever, Ilya and Talwar, Kunal and Tucker, Paul and Vanhoucke, Vincent and Vasudevan, Vijay and Vi{\'e}gas, Fernanda and Vinyals, Oriol and Warden, Pete and Wattenberg, Martin and Wicke, Martin and Yu, Yuan and Zheng, Xiaoqiang},
+  year      = {2015},
+  publisher = {Google Brain Team},
+  url       = {https://www.tensorflow.org/},
+  note      = {An end-to-end open source machine learning platform}
 }
 @article{emergencies_risk_perception_dhh,
   title   = {Risk perception and perceived self-efficacy of deaf and hard-of-hearing seniors and young adults in emergencies},
