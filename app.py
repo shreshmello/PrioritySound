@@ -5,11 +5,12 @@ from utils import simulate_alert
 import json
 from datetime import datetime
 from classifier import SoundClassifier
+from detection_buffer import DetectionBuffer
 import threading
 
 app = Flask(__name__)
 app.secret_key = "prioritysound_secret"
-
+buffer = DetectionBuffer(size=5, required_matches=3)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///prioritysound.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
@@ -116,8 +117,7 @@ def normalize_prediction(data):
 
 
 def detector_callback(data):
-    global latest_prediction, alerts_feed
-
+    global latest_prediction, alerts_feed, buffer
     normalized = normalize_prediction(data)
     timestamp = datetime.now().strftime("%I:%M %p")
 
@@ -130,19 +130,30 @@ def detector_callback(data):
     if normalized.get("accepted") and normalized.get("label"):
         sound = normalized["label"]
         score = normalized["score"]
-
+        if score > 0.35:
+            confirmed_sound = sound
+            avg_conf = score
+            print(avg_conf)
+        else:
+            buffer.add(sound, score)
+            result = buffer.confirmed()
+            if not result:
+                return
+            confirmed_sound, avg_conf = result
+            print(avg_conf)
         with user_context_lock:
             preferences = active_detection_context.get("preferences", {}) or {}
 
-        priority = preferences.get(sound, "low")
+        priority = preferences.get(confirmed_sound, "low")
         if priority == "ignore":
             return
 
-        alert = simulate_alert(sound, priority, timestamp)
+        alert = simulate_alert(confirmed_sound, priority, timestamp)
         alert["score"] = score
 
-        if not alerts_feed or alerts_feed[0].get("sound") != sound:
+        if not alerts_feed or alerts_feed[0].get("sound") != confirmed_sound:
             alerts_feed.insert(0, alert)
+            print('added to alerts!')
             if len(alerts_feed) > 20:
                 alerts_feed.pop()
 
