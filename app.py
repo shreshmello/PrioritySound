@@ -9,11 +9,12 @@ from utils import simulate_alert
 import json
 from datetime import datetime
 from classifier import SoundClassifier
+from detection_buffer import DetectionBuffer
 import threading
 
 app = Flask(__name__)
 app.secret_key = "prioritysound_secret"
-
+buffer = DetectionBuffer(size=5, required_matches=3)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///prioritysound.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db.init_app(app)
@@ -28,6 +29,7 @@ detection_thread = None
 stop_event = threading.Event()
 prediction_lock = threading.Lock()
 user_context_lock = threading.Lock()
+threshold = 0.5
 
 alerts_feed = []
 
@@ -116,6 +118,7 @@ def normalize_prediction(data):
 
 
 def detector_callback(data):
+    global latest_prediction, alerts_feed, buffer, threshold
     """Process sound classification results and create alerts"""
     global latest_prediction, alerts_feed
 
@@ -128,22 +131,33 @@ def detector_callback(data):
             "timestamp": timestamp
         }
 
-    if normalized.get("accepted") and normalized.get("label"):
+    if normalized.get("label"):
         sound = normalized["label"]
         score = normalized["score"]
-
+        if score > threshold:
+            confirmed_sound = sound
+            avg_conf = score
+            print(avg_conf)
+        else:
+            buffer.add(sound, score)
+            result = buffer.confirmed(threshold)
+            if not result:
+                return
+            confirmed_sound, avg_conf = result
+            print(avg_conf)
         with user_context_lock:
             preferences = active_detection_context.get("preferences", {}) or {}
 
-        priority = preferences.get(sound, "low")
+        priority = preferences.get(confirmed_sound, "low")
         if priority == "ignore":
             return
 
-        alert = simulate_alert(sound, priority, timestamp)
-        alert["score"] = score
+        alert = simulate_alert(confirmed_sound, priority, timestamp)
+        alert["score"] = avg_conf
 
-        if not alerts_feed or alerts_feed[0].get("sound") != sound:
+        if not alerts_feed or alerts_feed[0].get("sound") != confirmed_sound:
             alerts_feed.insert(0, alert)
+            print('added to alerts!')
             if len(alerts_feed) > 20:
                 alerts_feed.pop()
 
@@ -318,7 +332,16 @@ def start_detection():
     start_background_detection(session["user_id"])
     return jsonify({"status": "started"})
 
-
+@app.route('/set_bg_threshold', methods = ["POST"])
+def set_threshold():
+    global threshold
+    if threshold == 0.5:
+        threshold = 0.3
+    elif threshold == 0.3:
+        threshold = 0.5
+    else:
+        threshold  = 0.5
+    return jsonify({"threshold": threshold})
 @app.route("/stop_detection", methods=["POST"])
 def stop_detection():
     """Stop ongoing sound detection"""

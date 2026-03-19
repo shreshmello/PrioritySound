@@ -14,11 +14,19 @@ class DetectionBuffer:
         """Add a sound detection to the buffer"""
         self.buffer.append(label)
 
-    def confirmed(self):
+    def confirmed(self, threshold):
         """Check if a sound has been detected enough times to be confirmed"""
         if len(self.buffer) < self.required_matches:
             return None
-        most_common = max(set(self.buffer), key=self.buffer.count)
-        if self.buffer.count(most_common) >= self.required_matches:
-            return most_common
+        labels = {}
+        confs = {}
+        for label, conf in self.buffer:
+            labels[label] = labels.get(label, 0)+ 1
+            confs[label] = confs.get(label, 0) + conf
+        best_label = max(labels, key = labels.get)
+        if labels[best_label] >= self.required_matches:
+            avg_conf = confs[best_label]/labels[best_label]
+            if avg_conf < threshold:
+                return None
+            return best_label, avg_conf
         return None
