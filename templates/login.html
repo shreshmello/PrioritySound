@@ -1,9 +1,12 @@
+<!-- Login page - user authentication form -->
 {% extends "base.html" %}
 {% block content %}
 
+<!-- Centered authentication container -->
 <div class="auth-container">
   <h2>Login</h2>
 
+  <!-- Login form - posts to /login route -->
   <form method="POST">
     <input type="email" name="email" placeholder="Email" required>
 
@@ -12,6 +15,7 @@
     <button type="submit">Login</button>
   </form>
 
+  <!-- Link to registration page -->
   <p>No account? <a href="/register">Register</a></p>
 </div>
 

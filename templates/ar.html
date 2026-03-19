@@ -1,0 +1,56 @@
+<!-- Augmented Reality interface for PrioritySound - camera overlay with detection -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PrioritySound AR Mode</title>
+    <!-- Inline CSS for full-screen AR interface -->
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: black;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+
+        /* Full-screen camera video feed */
+        video {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Canvas overlay for AR graphics and text */
+        canvas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Status indicator showing AR mode is active */
+        .status {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+            font-size: 18px;
+            background: rgba(0,0,0,0.6);
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+<!-- Status display showing AR mode is active -->
+<div class="status">
+    PrioritySound AR Active
+</div>
+<!-- Camera video element for live feed -->
+<video id="camera" autoplay playsinline></video>
+<!-- Canvas for drawing AR overlays and detection results -->
+<canvas id="overlay"></canvas>
+<!-- JavaScript file handling AR logic and camera processing -->
+<script src="{{ url_for('static', filename='ar.js') }}"></script>
+</body>
+</html>

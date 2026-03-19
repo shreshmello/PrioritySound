@@ -1,11 +1,21 @@
+# Sound Detection Buffer
+# Used in console version to confirm repeated sound detections
+# Maintains a rolling buffer of recent predictions to filter noise
+
 from collections import deque
+
 class DetectionBuffer:
+    """Buffer for sound detections to require multiple confirmations"""
     def __init__(self, size=5, required_matches=3):
         self.buffer = deque(maxlen=size)
         self.required_matches = required_matches
-    def add(self, label, confidence):
-        self.buffer.append((label, confidence))
+
+    def add(self, label):
+        """Add a sound detection to the buffer"""
+        self.buffer.append(label)
+
     def confirmed(self, threshold):
+        """Check if a sound has been detected enough times to be confirmed"""
         if len(self.buffer) < self.required_matches:
             return None
         labels = {}
@@ -20,5 +30,3 @@ class DetectionBuffer:
                 return None
             return best_label, avg_conf
         return None
-
-  #stores last predicitons checks to see if a certain sound repeaets a lot

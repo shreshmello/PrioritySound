@@ -1,22 +1,35 @@
+<!-- Base template for all pages - provides common layout, navigation, and styling -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>PrioritySound</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Load main CSS stylesheet -->
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <!-- Favicon for browser tab -->
   <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}">
 </head>
 <body>
+  <!-- Navigation bar - appears on all pages -->
   <nav class="navbar">
-    <div class="navbar-logo">PrioritySound</div>
+    <!-- Logo section - clickable to return to dashboard -->
+    <div class="navbar-logo">
+      <a href="/dashboard">
+        <img src="{{ url_for('static', filename='PrioritySoundLogo.png') }}"
+            alt="PrioritySound Logo"
+            class="site-logo">
+      </a>
+    </div>
 
+    <!-- Main navigation links -->
     <div class="nav-links">
       <a href="/dashboard">Dashboard</a>
       <a href="/history">History</a>
-      <a href="/preferences">Preferences</a>
       <a href="/modes">Modes</a>
+      <a href="/feedback">Feedback</a>
 
+      <!-- User account dropdown menu -->
       <div class="profile-dropdown">
         <span>Account ▼</span>
         <div class="dropdown-content">
@@ -26,6 +39,7 @@
     </div>
   </nav>
 
+  <!-- Main content area - where page-specific content is inserted -->
   <main class="content">
     {% block content %}{% endblock %}
   </main>

@@ -1,0 +1,47 @@
+<!-- Feedback submission page - user reports and suggestions -->
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Main card container for feedback content -->
+<div class="card">
+  <!-- Section header with title and description -->
+  <div class="section-head">
+    <h3>Feedback</h3>
+    <p>Report issues or suggest improvements</p>
+  </div>
+
+  <!-- Conditional display of success message or feedback form -->
+  {% if submitted %}
+    <!-- Success message after feedback submission -->
+    <div class="success-message">
+      <p>Thank you for your feedback! We'll review it and get back to you if needed.</p>
+      <a href="/dashboard" class="button button-primary">Back to Dashboard</a>
+    </div>
+  {% else %}
+    <!-- Feedback submission form -->
+    <form method="POST" class="feedback-form">
+      <!-- Optional name field -->
+      <div class="form-group">
+        <label for="name">Name (optional)</label>
+        <input type="text" id="name" name="name" class="form-input">
+      </div>
+
+      <!-- Optional email field -->
+      <div class="form-group">
+        <label for="email">Email (optional)</label>
+        <input type="email" id="email" name="email" class="form-input">
+      </div>
+
+      <!-- Required message textarea -->
+      <div class="form-group">
+        <label for="message">Message *</label>
+        <textarea id="message" name="message" class="form-input" rows="6" required></textarea>
+      </div>
+
+      <!-- Submit button for feedback form -->
+      <button type="submit" class="button button-primary">Submit Feedback</button>
+    </form>
+  {% endif %}
+</div>
+
+{% endblock %}

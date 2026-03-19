@@ -1,4 +1,9 @@
+# Console Version of PrioritySound 
+# Alternative command-line interface for testing sound detection 
+# Not used in the web application - kept for development/testing purposes 
+
 def main():
+    """Main console application loop"""
     username = input("Enter username: ")
     user_preferences = UserPreferences(username)
 

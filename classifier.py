@@ -97,7 +97,7 @@ class SoundClassifier:
         audio = self.record_audio()
         return self.classify_audio(audio)
 
-    def classify_continuously(self, callback, stop_event, min_confidence=0.5):
+    def classify_continuously(self, callback, stop_event, min_confidence):
         while not stop_event.is_set():
             try:
                 results = self.classify_once()

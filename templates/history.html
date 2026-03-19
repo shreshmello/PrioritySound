@@ -1,29 +1,45 @@
+<!-- Alert history page - displays past emergency alerts -->
 {% extends "base.html" %}
 {% block content %}
 
+<!-- Main card container for history content -->
 <div class="card">
+  <!-- Section header with title and clear button -->
   <div class="section-head">
     <h3>Alert History</h3>
+
+    <!-- Form to clear all alert history -->
+    <form method="POST" action="/clear_history">
+      <button class="button button-secondary">Clear History</button>
+    </form>
+
   </div>
 
+  <!-- Conditional display of alerts or empty state -->
   {% if alerts %}
+    <!-- Stack of alert cards showing historical alerts -->
     <div class="alerts-stack">
       {% for alert in alerts %}
+        <!-- Individual alert card with priority styling -->
         <div class="alert-card {{ alert.priority }}">
           <div>
+            <!-- Alert sound type and priority info -->
             <div class="alert-title">{{ alert.sound }}</div>
             <div class="alert-subtitle">
               {{ alert.priority|title }} priority
+              <!-- Show confidence score if available -->
               {% if alert.score is defined %}
                 • {{ (alert.score * 100)|round(0)|int }}% confidence
               {% endif %}
             </div>
           </div>
+          <!-- Timestamp of when alert occurred -->
           <div class="alert-time">{{ alert.time }}</div>
         </div>
       {% endfor %}
     </div>
   {% else %}
+    <!-- Empty state message when no alerts exist -->
     <div class="empty-state">No alerts yet.</div>
   {% endif %}
 </div>

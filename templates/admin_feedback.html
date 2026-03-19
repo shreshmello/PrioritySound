@@ -1,0 +1,41 @@
+<!-- Admin feedback viewing page - displays all user feedback -->
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Main card container for admin feedback content -->
+<div class="card">
+  <!-- Section header with title and description -->
+  <div class="section-head">
+    <h3>Feedback Admin</h3>
+    <p>View all submitted feedback</p>
+  </div>
+
+  <!-- Conditional display of feedback list or empty state -->
+  {% if feedback_list %}
+    <!-- List of all feedback submissions -->
+    <div class="feedback-list">
+      {% for feedback in feedback_list %}
+        <!-- Individual feedback item -->
+        <div class="feedback-item">
+          <!-- Header with submitter info and timestamp -->
+          <div class="feedback-header">
+            <strong>{{ feedback.name or 'Anonymous' }}</strong>
+            <!-- Show email if provided -->
+            {% if feedback.email %}
+              <span class="muted">({{ feedback.email }})</span>
+            {% endif %}
+            <!-- Timestamp of submission -->
+            <span class="timestamp">{{ feedback.timestamp }}</span>
+          </div>
+          <!-- Feedback message content -->
+          <div class="feedback-message">{{ feedback.message }}</div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <!-- Empty state when no feedback exists -->
+    <div class="empty-state">No feedback submitted yet.</div>
+  {% endif %}
+</div>
+
+{% endblock %}

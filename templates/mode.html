@@ -1,20 +1,27 @@
+<!-- Mode selection page - choose detection sensitivity level -->
 {% extends "base.html" %}
 {% block content %}
 
+<!-- Centered card for mode selection -->
 <div class="card" style="max-width: 700px; margin: 0 auto;">
+  <!-- Section header showing current mode -->
   <div class="section-head">
     <h3>Choose a Mode</h3>
     <span class="muted">Current: {{ current_mode }}</span>
   </div>
 
+  <!-- Form to select and save new detection mode -->
   <form method="POST">
+    <!-- Radio buttons for each available mode -->
     {% for mode in modes %}
       <label class="stat-box" style="display:block; margin-bottom: 12px; cursor:pointer;">
+        <!-- Radio input with current mode pre-selected -->
         <input type="radio" name="mode" value="{{ mode }}" {% if mode == current_mode %}checked{% endif %}>
         <strong>{{ mode }}</strong>
       </label>
     {% endfor %}
 
+    <!-- Submit button to save mode selection -->
     <button type="submit" class="button button-primary">Save Mode</button>
   </form>
 </div>
