@@ -1,4 +1,3 @@
-
 // AR / Sound Localization JS
 const canvas = document.getElementById("overlay");
 const ctx = canvas.getContext("2d");
@@ -59,7 +58,6 @@ function drawArrow() {
     ctx.closePath();
     ctx.fill();
 }
-
 // Resize Canvas to Fit Section
 function resizeCanvas() {
     const container = document.getElementById("ar-section");
