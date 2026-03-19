@@ -1,75 +1,180 @@
 ![Logo](docs/PrioritySoundLogo.png)
 
-# PrioritySound -– Real-Time Sound Awareness for the Deaf and Hard-of-Hearing
+# PrioritySound – Real-Time Sound Awareness for Deaf and Hard-of-Hearing Users
 
-## Problem Statement 
+## Overview
 
-Over 1.5 billion people worldwide experience some degree of hearing loss, with many facing significant challenges in perceiving critical environmental sounds. These sounds—such as alarms, sirens, door knocks, or a baby crying—play an essential role in safety, awareness, and daily functioning. Existing assistive solutions often fall short because they:
+**PrioritySound** is a real-time sound awareness system designed to help Deaf and Hard-of-Hearing individuals detect and understand important environmental sounds.  
+
+Using machine learning, PrioritySound continuously monitors surrounding audio, identifies important sounds, and displays visual alerts that indicate both **the type of sound and where it is coming from**.
+
+The goal is to improve **safety, awareness, and independence** by ensuring that critical sounds are never missed.
+
+---
+
+# Problem Statement
+
+Over **1.5 billion people worldwide** experience some degree of hearing loss. Many of these individuals face challenges detecting important environmental sounds such as:
+
+- Fire alarms
+- Emergency sirens
+- Door knocks
+- Baby crying
+- Breaking glass
+
+These sounds are essential for safety and daily awareness.
+
+Existing assistive technologies often fall short because they:
+
 - Treat all sounds equally without prioritizing urgency
-- Deliver delayed or unreliable notifications
-- Lack intuitive, real-time visual interfaces
-- Do not provide spatial awareness of where sounds originate
+- Provide delayed or unreliable alerts
+- Lack clear visual interfaces
+- Do not indicate where a sound is coming from
 
-As a result, Deaf and Hard-of-Hearing individuals may miss time-sensitive auditory cues, increasing safety risks, reducing independence, and causing stress in everyday situations.
+As a result, Deaf and Hard-of-Hearing individuals may miss critical auditory cues, increasing safety risks and reducing independence.
 
-There is a need for a system that can intelligently detect, prioritize, and visually represent environmental sounds in real time, while also conveying where those sounds are coming from in a clear and accessible way. 
+**PrioritySound addresses this problem by detecting, prioritizing, and visually representing important sounds in real time.**
 
-## Our Solution and Key Features
+---
 
-PrioritySound uses machine learning to deliver intelligent sound detection and accessibility:
-- **Live Sound Detection**: Constantly monitors microphone input to analyze sounds consistently
-- **Machine Learning Classification**: Uses trained deep learning models to identify and label environmental sounds
-- **Priority-Based Alerts**: Categorizes sounds as Emergency, High, Medium, or Low based on safety risk
-- **Real-Time Dashboard**: Displays visual alerts, status, and activity history optimized for deaf and hard-of-hearing users
-- **AR Visual Sound Mapping**: Overlays directional alerts onto a live webcam feed to help users locate sounds
-- **Customizable Modes**: Adjusts priorities and alert styles based on user context (Parent, Outside, School, Home)
+# Key Features
 
-## Software Technology
+PrioritySound combines machine learning and accessible design to deliver intelligent sound detection.
 
-Priority Sound is built by integrating...
-- CSS: for UI design and styling
-- HTML: page structure
-- Javascript: Frontend
-- Python: Backend
-- Machine Learning Model: Sound classification
+### Live Sound Detection
+Continuously monitors microphone input to detect environmental sounds in real time.
 
-## How It Works
- PrioritySound uses machine learning to:
-1. Detect live audio input from a microphone
-2. Classify sounds into categories
-3. Assign priority levels (Emergency, High, Medium, Low)
-4. Display alerts in real time
+### Machine Learning Classification
+Uses trained deep learning models to classify different types of sounds.
 
-## Audio Classification
+### Priority-Based Alerts
+Sounds are categorized by urgency:
 
-PrioritySound uses machine-learning to classify environmental sounds in real time. Built on transformer-based architecture, the system:
-- Analyzes audio spectral features to identify sound types
-- Assigns confidence scores to each classification
-- Automatically prioritizes sounds based on urgency levels (Emergency, High, Medium, Low)
-- Continuously learns and adapts to new environmental contexts
+- 🔴 **Emergency**
+- 🟠 **High**
+- 🟡 **Medium**
+- 🟢 **Low**
 
-The model is trained on diverse sound datasets including alarms, sirens, appliances, and human-generated sounds, ensuring reliable detection across various environments.
+Color-coded alerts help users quickly understand the importance of a sound.
 
-## Augmented Reality Sound Mapping
+### Real-Time Dashboard
+A visual dashboard displays:
 
-A web-based AR feature that overlays detected sounds onto a live webcam feed. The system:
+- Current sound alerts
+- Priority levels
+- Detection history
+
+The interface is designed to be clear and accessible for Deaf and Hard-of-Hearing users.
+
+### Augmented Reality Sound Mapping
+PrioritySound overlays sound alerts onto a **live webcam feed**, helping users understand where sounds are coming from.
+
+### Customizable Modes
+Users can switch between environment-specific modes that adjust sound priorities and alert behavior.
+
+---
+
+# Software Architecture
+
+PrioritySound is built using a modern web and machine learning stack.
+
+**Frontend**
+- HTML
+- CSS
+- JavaScript
+
+**Backend**
+- Python
+- Flask
+- SQLAlchemy
+
+**Machine Learning**
+- Transformers
+- TensorFlow
+- NumPy
+
+**Audio Processing**
+- SoundDevice
+
+---
+
+# Audio Classification
+
+The system uses a **transformer-based audio classification model** that:
+
+- Analyzes audio spectral features
+- Identifies sound categories
+- Assigns confidence scores to predictions
+- Automatically prioritizes sounds based on urgency
+
+Priority levels include:
+
+- Emergency
+- High
+- Medium
+- Low
+
+The model is trained on diverse environmental audio datasets including:
+
+- Alarms
+- Sirens
+- Household appliances
+- Human-generated sounds
+
+This ensures reliable detection across many environments.
+
+---
+
+# Augmented Reality Sound Mapping
+
+PrioritySound includes a web-based **AR visualization system** that helps users locate sounds in their environment.
+
+The system:
+
+- Displays sound alerts on a live camera feed
 - Estimates sound direction (Left, Center, Right)
-- Displays color-coded visual indicators based on urgency
-- Example: Red alert for sirens, yellow notification for door knocks
-- Provides spatial awareness for users to locate sounds in their environment
+- Uses color-coded indicators to show urgency
 
-## Modes
+This provides spatial awareness and helps users quickly respond to important events.
 
-PrioritySound includes four customizable environment modes that adjust sound prioritization based on context:
+---
 
-Available Modes:
-- **Parent Mode**: Prioritizes baby crying, glass breaking, door knocks, and smoke alarms
-- **Outside Mode**: Prioritizes emergency sirens, car horns, and traffic alerts
-- **School Mode**: Prioritizes lockdown alarms, fire alarms, and school bells
-- **Home Mode**: Prioritizes doorbells, appliance alarms, and security alerts
+# Environment Modes
 
-Each mode automatically adjusts priority levels, alert styles, and filters out low-importance noise for relevant, timely alerts.
+PrioritySound includes four customizable modes that adjust sound priorities depending on the user's environment.
 
+### Parent Mode
+Prioritizes sounds such as:
+
+- Baby crying
+- Glass breaking
+- Door knocks
+- Smoke alarms
+
+### Outside Mode
+Prioritizes:
+
+- Emergency sirens
+- Car horns
+- Traffic alerts
+
+### School Mode
+Prioritizes:
+
+- Lockdown alarms
+- Fire alarms
+- School bells
+
+### Home Mode
+Prioritizes:
+
+- Doorbells
+- Appliance alarms
+- Security alerts
+
+Each mode filters out low-importance noise and ensures users receive the most relevant alerts.
+
+---
 ## Installation
 
 1. Clone the repository:
