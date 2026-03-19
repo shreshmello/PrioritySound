@@ -308,9 +308,7 @@ Each mode filters out low-importance noise and ensures users receive the most re
 }
 ```
 
-## License
 
-This project is open-source. Please check the license file for details.
 
 
 
