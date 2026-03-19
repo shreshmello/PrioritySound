@@ -31,7 +31,7 @@ Existing assistive technologies often fall short because they:
 - Lack clear visual interfaces
 - Do not indicate where a sound is coming from
 
-As a result, Deaf and Hard-of-Hearing individuals may miss critical auditory cues, increasing safety risks and reducing independence [^2][^3].
+As a result, Deaf and Hard-of-Hearing individuals may miss critical auditory cues, increasing safety risks and reducing independence [^2] [^3].
 
 **PrioritySound addresses this problem by detecting, prioritizing, and visually representing important sounds in real time.**
 
