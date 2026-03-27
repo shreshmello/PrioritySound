@@ -901,3 +901,25 @@ select:focus {
   color: var(--text);
   line-height: 1.5;
 }
+/* ============================= */
+/* AR HUD SYSTEM */
+/* ============================= */
+
+.ar-container {
+    position: relative;
+    height: 85vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#direction-wrapper {
+    position: relative;
+    text-align: center;
+}
+
+#arrow {
+    font-size: 80px;
+    transition: transform 0.5s ease;
+}
+
