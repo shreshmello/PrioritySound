@@ -403,3 +403,25 @@ def view_feedback():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=3000, debug=True, threaded=True)
+import random
+from flask import jsonify
+
+@app.route("/ar")
+def ar_view():
+    return render_template("ar.html")
+
+@app.route("/direction_data")
+def direction_data():
+    # Simulated sound detection data (replace later with real direction logic)
+    directions = ["Emergency", "High", "Medium", "Low"]
+    priority = random.choice(directions)
+
+    angle = random.randint(0, 359)
+    amplitude = random.uniform(0.2, 1.0)
+
+    return jsonify({
+        "label": "Siren",
+        "priority": priority.lower(),
+        "angle": angle,
+        "amplitude": amplitude
+    })
