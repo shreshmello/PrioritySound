@@ -249,7 +249,17 @@ def dashboard():
         alerts=alerts_feed,
         mode=user.mode or "Custom"
     )
+@app.route('/feedback')
+def feedback():
+    return render_template('feedback.html')
 
+@app.route('/history')
+def feedback():
+    return render_template('history.html')
+
+@app.route('/modes')
+def feedback():
+    return render_template('mode.html')
 
 @app.route("/ar")
 def ar_view():
