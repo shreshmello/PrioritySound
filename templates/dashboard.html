@@ -248,23 +248,36 @@
 
   document.getElementById("start-btn").addEventListener("click", async () => {
     await fetch("/start_detection", { method: "POST" });
+    document.getElementById("start-btn").setAttribute('class', 'button-started');
     fetchLatestPrediction();
     fetchAlerts();
   });
 
   document.getElementById("stop-btn").addEventListener("click", async () => {
     await fetch("/stop_detection", { method: "POST" });
+    document.getElementById('start-btn').classList.remove('button-started');
+    document.getElementById('start-btn').classList.add('button-primary');
+    document.getElementById('start-btn').classList.add('button');
   });
-
-  document.getElementById('bg-noise').addEventListener("click", async() => {
-    await fetch("/set_bg_threshold", {method: "POST"});
-    if ( document.getElementById('bg-noise').classList.contains('clicked')) {
-      document.getElementById('bg-noise').classList.remove('clicked')
+  let bgNoiseActive = false;
+  const bgBtn = document.getElementById('bg-noise');
+  const freshBtn = bgBtn.cloneNode(true);
+  bgBtn.parentNode.replaceChild(freshBtn, bgBtn);
+  document.getElementById('bg-noise').addEventListener("click", async () => {
+    const res = await fetch("/set_bg_threshold", { method: "POST" });
+    const data = await res.json();
+    
+    bgNoiseActive = data.threshold === 0.3;
+    const btn = document.getElementById('bg-noise');
+    
+    if (bgNoiseActive) {
+        btn.classList.add('clicked');
+        btn.textContent = 'Background noise is active';
+    } else {
+        btn.classList.remove('clicked');
+        btn.textContent = 'Background noise is present';
     }
-    else {
-      document.getElementById('bg-noise').classList.add('clicked')
-    }
-  });
+}, { once: false });
 
   fetchLatestPrediction();
   fetchAlerts();

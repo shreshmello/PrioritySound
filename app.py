@@ -7,6 +7,7 @@ from utils import simulate_alert
 from datetime import datetime
 from classifier import SoundClassifier
 from detection_buffer import DetectionBuffer
+from emergency_detector import EmergencySoundDetector
 import threading
 import json
 import random
@@ -109,54 +110,74 @@ def normalize_prediction(data):
         "score": top_score,
         "raw_label": data.get("raw_label", top_label),
         "results": results,
-        "accepted": top_score >= 0.5
+        "accepted": top_score >= threshold
     }
 
 
 # ---------------- DETECTION CALLBACK ----------------
 def detector_callback(data):
     global latest_prediction, alerts_feed
+    try:
+        normalized = normalize_prediction(data)
+        timestamp = datetime.now().strftime("%I:%M %p")
 
-    normalized = normalize_prediction(data)
-    timestamp = datetime.now().strftime("%I:%M %p")
+        with prediction_lock:
+            latest_prediction.update(normalized)
+            latest_prediction["timestamp"] = timestamp
 
-    with prediction_lock:
-        latest_prediction.update(normalized)
-        latest_prediction["timestamp"] = timestamp
-
-    if not normalized["label"]:
-        return
-
-    sound = normalized["label"]
-    score = normalized["score"]
-
-    # confirmation logic
-    if score > threshold:
-        confirmed_sound = sound
-        avg_conf = score
-    else:
-        buffer.add((sound, score))
-        result = buffer.confirmed(threshold)
-        if not result:
+        if not normalized["label"]:
+            print("[callback] no label, returning")
             return
-        confirmed_sound, avg_conf = result
 
-    # preferences
-    with user_context_lock:
-        prefs = active_detection_context.get("preferences", {})
+        sound = normalized["label"]
+        score = normalized["score"]
+        print(f"[callback] sound={sound}, score={score:.2f}, threshold={threshold}")
 
-    priority = prefs.get(confirmed_sound, "low")
-    if priority == "ignore":
-        return
+        if score > threshold:
+            confirmed_sound = sound
+            avg_conf = score
+            print(f"[callback] fast path: {confirmed_sound} at {avg_conf:.2f}")
+        else:
+            buffer.add(sound, score)
+            result = buffer.confirmed(threshold)
+            print(f"[callback] buffer result: {result}")
+            if not result:
+                return
+            confirmed_sound, avg_conf = result
+            buffer.clear()
 
-    alert = simulate_alert(confirmed_sound, priority, timestamp)
-    alert["score"] = avg_conf
+        with user_context_lock:
+            prefs = dict(active_detection_context["preferences"])
+        print(f"[callback] prefs={prefs}")
 
-    if not alerts_feed or alerts_feed[0]["sound"] != confirmed_sound:
-        alerts_feed.insert(0, alert)
-        if len(alerts_feed) > 20:
-            alerts_feed.pop()
+        detector = EmergencySoundDetector(prefs, active_threshold=threshold)
+        priority = detector.get_alert_level(confirmed_sound, avg_conf)
+        print(f"[callback] priority={priority}")
 
+        if priority == "ignore":
+            print("[callback] ignored by detector")
+            return
+
+        alert = simulate_alert(confirmed_sound, priority, timestamp)
+        alert["score"] = avg_conf
+
+        last_alert = alerts_feed[0] if alerts_feed else None
+        is_duplicate = (
+            last_alert and
+            last_alert["sound"] == confirmed_sound and
+            last_alert["time"] == timestamp
+        )
+        print(f"[callback] is_duplicate={is_duplicate}")
+
+        if not is_duplicate:
+            alerts_feed.insert(0, alert)
+            if len(alerts_feed) > 20:
+                alerts_feed.pop()
+            print(f"[callback] alert inserted: {alert}")
+
+    except Exception as e:
+        print(f"[detector_callback ERROR] {e}")
+    
 
 # ---------------- BACKGROUND THREAD ----------------
 def detection_worker():
@@ -172,8 +193,10 @@ def start_background_detection(user_id):
     global detection_thread
 
     user = User.query.get(user_id)
-    preferences = json.loads(user.preferences) if user and user.preferences else {}
-
+    if user and user.preferences:
+        preferences = json.loads(user.preferences)
+    else:
+        preferences = {}
     with user_context_lock:
         active_detection_context["user_id"] = user_id
         active_detection_context["preferences"] = preferences
@@ -269,10 +292,12 @@ def modes():
         selected_mode = request.form.get("mode")
         if selected_mode:
             session['mode'] = selected_mode
-            session['preferences'] = MODES.get(selected_mode, {})
+            user = User.query.get(session["user_id"])
+            user.preferences = json.dumps(MODES.get(selected_mode, {}))
+            db.session.commit()
         return redirect('/dashboard')
     return render_template(
-        'mode.html', 
+        'mode.html',
         modes = MODES,
         current_mode = session.get('mode', 'Custom'))
 
@@ -348,6 +373,7 @@ def alerts():
 def set_threshold():
     global threshold
     threshold = 0.3 if threshold == 0.5 else 0.5
+    print(f"[bg-noise] threshold set to {threshold}")
     return jsonify({"threshold": threshold})
 
 

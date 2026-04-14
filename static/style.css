@@ -615,6 +615,23 @@ a {
   box-shadow: 0 12px 24px rgba(187, 211, 52, 0.22);
 }
 
+.button-started {
+  border: none;
+
+  border-radius: 14px;
+  padding: 12px 18px;
+  font-size: 0.98rem;
+
+  font-weight: 700;
+
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+  background: linear-gradient(135deg, var(--red), var(--orange)); /* gradiant red and orange */
+
+  color: #1c0818;
+
+  box-shadow: 0 12px 24px rgba(187, 211, 52, 0.22);
+}
 
 /* secondary action button */
 .button-secondary {

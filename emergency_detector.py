@@ -4,20 +4,24 @@
 
 class EmergencySoundDetector:
     """Determines alert levels for detected sounds based on user preferences"""
-    def __init__(self, user_preferences):
+    def __init__(self, user_preferences, active_threshold):
         self.user_preferences = user_preferences
+        self.active_threshold = active_threshold
         self.thresholds = {
-            "emergency": 0.6,
-            "high": 0.55,
-            "medium": 0.5,
-            "low": 0.45,
-            "normal": 0.5
+            "emergency": active_threshold+0.1,
+            "high": active_threshold+0.05,
+            "medium": active_threshold,
+            "low": active_threshold-0.05,
+            "normal": active_threshold
         }
 
     def get_alert_level(self, label, score):
-        """Get alert level for a sound based on priority and confidence score"""
-        priority = self.user_preferences.get_priority(label)
-        threshold = self.thresholds.get(priority, 0.5)
+        priority = self.user_preferences.get(label.lower())
+        if priority is None:
+            priority = "low"
+        if priority == "ignore":
+            return "ignore"
+        threshold = self.thresholds.get(priority, 0.10)
         if score < threshold:
             return "ignore"
         return priority
