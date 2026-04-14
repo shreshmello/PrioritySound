@@ -1,97 +1,109 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>PrioritySound Direction View</title>
+<meta charset="UTF-8">
+<title>PrioritySound AR View</title>
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial;
-      background: #0b0b0b;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      text-align: center;
-    }
+<style>
+body {
+  margin: 0;
+  background: black;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+  color: white;
+}
 
-    .card {
-      padding: 30px;
-      border-radius: 16px;
-      border: 2px solid #333;
-      width: 320px;
-    }
+/* Fullscreen AR overlay */
+#ar-container {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  background: radial-gradient(circle, #111, #000);
+}
 
-    #direction {
-      font-size: 48px;
-      margin: 20px 0;
-    }
+/* Center sound icon */
+#sound-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 80px;
+}
 
-    .left { color: #00d4ff; }
-    .right { color: #ff9a00; }
-    .center { color: #00ff88; }
+/* Arrow styling */
+.arrow {
+  position: absolute;
+  font-size: 70px;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
 
-    #label {
-      font-size: 18px;
-      opacity: 0.8;
-    }
+/* positions */
+#leftArrow { left: 10%; top: 50%; transform: translateY(-50%); }
+#rightArrow { right: 10%; top: 50%; transform: translateY(-50%); }
+#centerText { bottom: 10%; left: 50%; transform: translateX(-50%); font-size: 24px; }
 
-    #priority {
-      font-size: 22px;
-      margin-top: 10px;
-    }
-  </style>
+/* priority colors */
+.emergency { color: red; }
+.high { color: orange; }
+.medium { color: yellow; }
+.low { color: blue; }
+</style>
 </head>
 
 <body>
 
-  <div class="card">
-    <h2>Sound Direction</h2>
+<div id="ar-container">
 
-    <div id="direction">Loading...</div>
+  <div id="sound-icon">🔊</div>
 
-    <div id="label"></div>
-    <div id="priority"></div>
-  </div>
+  <div id="leftArrow" class="arrow">⬅️</div>
+  <div id="rightArrow" class="arrow">➡️</div>
+
+  <div id="centerText">Waiting for sound...</div>
+
+</div>
 
 <script>
-async function update() {
+async function fetchDirection() {
   try {
     const res = await fetch("/direction_data");
     const data = await res.json();
 
-    const dirBox = document.getElementById("direction");
-    const labelBox = document.getElementById("label");
-    const priorityBox = document.getElementById("priority");
+    updateAR(data);
 
-    const dir = data.direction;
-
-    dirBox.className = "";
-
-    if (dir === "left") {
-      dirBox.innerText = "⬅ LEFT";
-      dirBox.classList.add("left");
-    } 
-    else if (dir === "right") {
-      dirBox.innerText = "RIGHT ➡";
-      dirBox.classList.add("right");
-    } 
-    else {
-      dirBox.innerText = "⬆ CENTER";
-      dirBox.classList.add("center");
-    }
-
-    labelBox.innerText = "Sound: " + data.label;
-    priorityBox.innerText = "Priority: " + data.priority.toUpperCase();
-
-  } catch (e) {
-    console.log(e);
+  } catch (err) {
+    console.log("error:", err);
   }
 }
 
-setInterval(update, 1000);
-update();
+function updateAR(data) {
+  const left = document.getElementById("leftArrow");
+  const right = document.getElementById("rightArrow");
+  const text = document.getElementById("centerText");
+
+  // reset visibility
+  left.style.opacity = 0;
+  right.style.opacity = 0;
+
+  // show direction
+  if (data.direction === "left") {
+    left.style.opacity = 1;
+  } 
+  else if (data.direction === "right") {
+    right.style.opacity = 1;
+  }
+
+  // center always shows label
+  text.innerHTML = `
+    <b>${data.label}</b> <br>
+    Priority: <span class="${data.priority}">${data.priority}</span>
+  `;
+}
+
+// update every second
+setInterval(fetchDirection, 1000);
+fetchDirection();
 </script>
 
 </body>
