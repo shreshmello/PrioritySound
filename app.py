@@ -247,19 +247,34 @@ def dashboard():
         email=user.email,
         preferences=prefs,
         alerts=alerts_feed,
-        mode=user.mode or "Custom"
+        mode= session.get("mode", user.mode or "Custom")
     )
 @app.route('/feedback')
 def feedback():
+    if "user_id" not in session:
+        return redirect("/login")
     return render_template('feedback.html')
 
 @app.route('/history')
 def history():
+    if "user_id" not in session:
+        return redirect("/login")
     return render_template('history.html')
 
-@app.route('/modes')
+@app.route('/modes', methods = ['GET', 'POST'])
 def modes():
-    return render_template('mode.html')
+    if "user_id" not in session:
+        return redirect("/login")
+    if request.method == 'POST':
+        selected_mode = request.form.get("mode")
+        if selected_mode:
+            session['mode'] = selected_mode
+            session['preferences'] = MODES.get(selected_mode, {})
+        return redirect('/dashboard')
+    return render_template(
+        'mode.html', 
+        modes = MODES,
+        current_mode = session.get('mode', 'Custom'))
 
 @app.route("/ar")
 def ar_view():
