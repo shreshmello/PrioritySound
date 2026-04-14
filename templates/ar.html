@@ -1,21 +1,100 @@
-<!-- Direction Arrow -->
-    <div id="direction-wrapper">
-        <div id="distance-ring"></div>
-        <div id="arrow">▲</div>
-        <div id="sound-label">SOUND – 0°</div>
-    </div>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PrioritySound AR</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: black;
+      color: white;
+      text-align: center;
+    }
 
-    <!-- Mini Compass -->
-    <div class="compass">
-        <div>N</div>
-        <div>E</div>
-        <div>S</div>
-        <div>W</div>
-        <div id="compass-angle">0°</div>
-    </div>
+    #container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
 
+    #directionBox {
+      font-size: 40px;
+      margin: 20px;
+      padding: 20px;
+      border: 2px solid white;
+      border-radius: 12px;
+      width: 300px;
+    }
+
+    .left { color: cyan; }
+    .right { color: orange; }
+    .center { color: lime; }
+
+    #label {
+      font-size: 24px;
+      margin-top: 10px;
+      opacity: 0.8;
+    }
+
+    #priority {
+      font-size: 28px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="container">
+  <h1>Sound Direction Panel</h1>
+
+  <div id="directionBox">Loading...</div>
+
+  <div id="label"></div>
+  <div id="priority"></div>
 </div>
 
-<script src="{{ url_for('static', filename='ar.js') }}"></script>
+<script>
+async function updateAR() {
+  try {
+    const res = await fetch("/direction_data");
+    const data = await res.json();
 
-{% endblock %}
+    const box = document.getElementById("directionBox");
+    const label = document.getElementById("label");
+    const priority = document.getElementById("priority");
+
+    // Direction display
+    const dir = data.direction;
+
+    if (dir === "left") {
+      box.innerHTML = "⬅ LEFT";
+      box.className = "left";
+    } 
+    else if (dir === "right") {
+      box.innerHTML = "RIGHT ➡";
+      box.className = "right";
+    } 
+    else {
+      box.innerHTML = "⬆ CENTER";
+      box.className = "center";
+    }
+
+    // Sound info
+    label.innerText = "Sound: " + data.label;
+    priority.innerText = "Priority: " + data.priority.toUpperCase();
+
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+// update every second
+setInterval(updateAR, 1000);
+updateAR();
+</script>
+
+</body>
+</html>
