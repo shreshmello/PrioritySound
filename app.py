@@ -254,11 +254,11 @@ def feedback():
     return render_template('feedback.html')
 
 @app.route('/history')
-def feedback():
+def history():
     return render_template('history.html')
 
 @app.route('/modes')
-def feedback():
+def modes():
     return render_template('mode.html')
 
 @app.route("/ar")
