@@ -272,17 +272,36 @@ def dashboard():
         alerts=alerts_feed,
         mode= session.get("mode", user.mode or "Custom")
     )
-@app.route('/feedback')
+@app.route('/feedback', methods=['GET', 'POST'])
 def feedback():
     if "user_id" not in session:
         return redirect("/login")
-    return render_template('feedback.html')
+    
+    if request.method == 'POST':
+        feedback_list.append({
+            "name": request.form.get("name", ""),
+            "email": request.form.get("email", ""),
+            "message": request.form.get("message", ""),
+            "timestamp": datetime.now().strftime("%I:%M %p"),
+            "user_id": session["user_id"]
+        })
+        return render_template('feedback.html', submitted=True)
+    
+    return render_template('feedback.html', submitted=False)
 
 @app.route('/history')
 def history():
     if "user_id" not in session:
         return redirect("/login")
-    return render_template('history.html')
+    return render_template('history.html', alerts=alerts_feed)
+
+@app.route('/clear_history', methods=["POST"])
+def clear_history():
+    if "user_id" not in session:
+        return redirect("/login")
+    global alerts_feed
+    alerts_feed = []
+    return redirect("/history")
 
 @app.route('/modes', methods = ['GET', 'POST'])
 def modes():
