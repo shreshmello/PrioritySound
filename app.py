@@ -412,16 +412,38 @@ def ar_view():
 
 @app.route("/direction_data")
 def direction_data():
-    # Simulated sound detection data (replace later with real direction logic)
-    directions = ["Emergency", "High", "Medium", "Low"]
-    priority = random.choice(directions)
+    import random
+
+    # Simulated for now (later connect to real classifier)
+    label = random.choice([
+        "smoke alarm",
+        "doorbell ringing",
+        "car horn",
+        "baby crying"
+    ])
+
+    priority_map = {
+        "smoke alarm": "emergency",
+        "doorbell ringing": "medium",
+        "car horn": "high",
+        "baby crying": "high"
+    }
+
+    priority = priority_map.get(label, "low")
 
     angle = random.randint(0, 359)
-    amplitude = random.uniform(0.2, 1.0)
+
+    #  direction logic
+    if 60 <= angle <= 120:
+        direction = "right"
+    elif 240 <= angle <= 300:
+        direction = "left"
+    else:
+        direction = "center"
 
     return jsonify({
-        "label": "Siren",
-        "priority": priority.lower(),
+        "label": label,
+        "priority": priority,
         "angle": angle,
-        "amplitude": amplitude
+        "direction": direction
     })
