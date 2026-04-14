@@ -214,7 +214,7 @@ def login():
 
         if user and check_password_hash(user.password, request.form["password"]):
             session["user_id"] = user.id
-            return redirect("/start_dashboard")
+            return redirect("/dashboard")
 
         return "Invalid credentials!"
 
