@@ -19,10 +19,12 @@ class EmergencySoundDetector:
         priority = self.user_preferences.get(label.lower())
         if priority is None:
             priority = "low"
+        
         if priority == "ignore":
             return "ignore"
-        threshold = self.thresholds.get(priority, 0.10)
-        if score < threshold:
-            return "ignore"
+        if label.lower() not in self.user_preferences:
+            score_threshold = self.thresholds.get(priority, self.active_threshold)
+            if score < score_threshold:
+                return "ignore"
         return priority
 

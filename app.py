@@ -61,7 +61,8 @@ AVAILABLE_SOUNDS = [
     "fire alarm",
     "police siren",
     "ambulance siren",
-    "car horn"
+    "car horn",
+    "speech"
 ]
 
 MODES = {
@@ -152,8 +153,13 @@ def detector_callback(data):
 
         detector = EmergencySoundDetector(prefs, active_threshold=threshold)
         priority = detector.get_alert_level(confirmed_sound, avg_conf)
+        
         print(f"[callback] priority={priority}")
-
+        with user_context_lock:
+            prefs = dict(active_detection_context["preferences"])
+        mode_priority = prefs.get(confirmed_sound)
+        if mode_priority == "emergency":
+            priority = "emergency"
         if priority == "ignore":
             print("[callback] ignored by detector")
             return
@@ -398,4 +404,4 @@ def set_threshold():
 
 # ---------------- RUN ----------------
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=3000, debug=True, threaded=True)
+    app.run(host="0.0.0.0", port=8000, debug=True, threaded=True)

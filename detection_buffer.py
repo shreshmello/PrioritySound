@@ -11,7 +11,8 @@ class DetectionBuffer:
     def add(self, label, conf):
         """Add a sound detection (label + confidence) to the buffer"""
         self.buffer.append((label, conf))
-
+    def clear(self):
+        self.buffer = []
     def confirmed(self, threshold):
         """Check if a sound is confirmed based on repeated detections"""
         if len(self.buffer) < self.required_matches:
