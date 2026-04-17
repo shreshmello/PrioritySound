@@ -95,12 +95,10 @@ class SoundClassifier:
 
     def classify_once(self):
         audio = self.record_audio()
-            # spectral heuristic
-        fft = np.abs(np.fft.rfft(audio))
-        mid = len(fft) // 2
-        low = np.mean(fft[:mid] ** 2)
-        high = np.mean(fft[mid:] ** 2)
-        ratio = (high - low) / (high + low + 1e-10)
+        first_half = np.mean(audio[:len(audio)//2] ** 2)
+        second_half = np.mean(audio[len(audio)//2:] ** 2)
+        ratio = (second_half - first_half) / (second_half + first_half + 1e-10)
+        print(f"Ratio: {ratio}")
         if ratio > 0.1:
             direction = "right"
         elif ratio < -0.1:
