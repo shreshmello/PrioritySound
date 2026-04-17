@@ -2,7 +2,7 @@ import csv
 import time
 import sounddevice as sd
 from transformers import pipeline
-
+import numpy as np
 
 class SoundClassifier:
     def __init__(
@@ -95,8 +95,22 @@ class SoundClassifier:
 
     def classify_once(self):
         audio = self.record_audio()
-        return self.classify_audio(audio)
-
+            # spectral heuristic
+        fft = np.abs(np.fft.rfft(audio))
+        mid = len(fft) // 2
+        low = np.mean(fft[:mid] ** 2)
+        high = np.mean(fft[mid:] ** 2)
+        ratio = (high - low) / (high + low + 1e-10)
+        if ratio > 0.1:
+            direction = "right"
+        elif ratio < -0.1:
+            direction = "left"
+        else:
+            direction = "center"
+        
+        results = self.classify_audio(audio)
+        results[0]["direction"] = direction  # attach to top result
+        return results    
     def classify_continuously(self, callback, stop_event, min_confidence):
         while not stop_event.is_set():
             try:
@@ -109,7 +123,8 @@ class SoundClassifier:
                         "score": top["score"],
                         "raw_label": top["raw_label"],
                         "results": results,
-                        "accepted": top["score"] >= min_confidence
+                        "accepted": top["score"] >= min_confidence,
+                        "direction": top.get("direction", "center")
                     }
                     callback(payload)
 

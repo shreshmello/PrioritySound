@@ -14,7 +14,7 @@ import random
 
 app = Flask(__name__)
 app.secret_key = "prioritysound_secret"
-
+latest_direction = "center"
 # DB setup
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///prioritysound.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -85,7 +85,7 @@ def get_classifier():
     return classifier
 
 
-# ---------------- NORMALIZE ----------------
+# ---------------- NORMALIZE -- --------------
 def normalize_prediction(data):
     results = data.get("results", []) or []
 
@@ -117,8 +117,9 @@ def normalize_prediction(data):
 
 # ---------------- DETECTION CALLBACK ----------------
 def detector_callback(data):
-    global latest_prediction, alerts_feed
+    global latest_prediction, alerts_feed, latest_direction
     try:
+        latest_direction = data.get("direction", "center")
         normalized = normalize_prediction(data)
         timestamp = datetime.now().strftime("%I:%M %p")
 
@@ -333,41 +334,6 @@ def ar_view():
     return render_template("ar.html")
 
 
-# ---------------- AR DATA (FIXED) ----------------
-@app.route("/direction_data")
-def direction_data():
-
-    label = random.choice([
-        "smoke alarm",
-        "doorbell ringing",
-        "car horn",
-        "baby crying"
-    ])
-
-    priority_map = {
-        "smoke alarm": "emergency",
-        "doorbell ringing": "medium",
-        "car horn": "high",
-        "baby crying": "high"
-    }
-
-    angle = random.randint(0, 360)
-
-    if 60 <= angle <= 120:
-        direction = "right"
-    elif 240 <= angle <= 300:
-        direction = "left"
-    else:
-        direction = "center"
-
-    return jsonify({
-        "label": label,
-        "priority": priority_map[label],
-        "angle": angle,
-        "direction": direction
-    })
-
-
 # ---------------- API ----------------
 @app.route("/start_detection", methods=["POST"])
 def start_detection():
@@ -401,7 +367,33 @@ def set_threshold():
     print(f"[bg-noise] threshold set to {threshold}")
     return jsonify({"threshold": threshold})
 
+@app.route("/direction_data")
+def direction_data():
+    with prediction_lock:
+        label = latest_prediction.get("label")
+        score = latest_prediction.get("score", 0)
+        accepted = latest_prediction.get("accepted", False)
 
+    if not accepted or not label:
+        return jsonify({"label": None, "direction": None, "priority": None})
+
+    priority_map = {
+        "smoke alarm": "emergency",
+        "fire alarm": "emergency",
+        "police siren": "emergency",
+        "ambulance siren": "emergency",
+        "car horn": "high",
+        "baby crying": "high",
+        "doorbell ringing": "medium",
+        "speech": "low",
+    }
+
+    return jsonify({
+        "label": label,
+        "priority": priority_map.get(label, "low"),
+        "direction": latest_direction,
+        "score": score
+    })
 # ---------------- RUN ----------------
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8000, debug=True, threaded=True)

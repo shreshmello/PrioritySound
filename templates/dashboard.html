@@ -104,13 +104,29 @@
       </div>
     </section>
   </div>
+ <section class="card" style="margin-top:24px;">
+  <div class="section-head">
+    <h3>AR Sound Mapping</h3>
+    <span class="muted" id="ar-label">Detecting...</span>
+  </div>
 
+  <div style="display:flex; flex-direction:column; align-items:center; gap:24px; padding:32px 0;">
+    <div id="ar-arrow" style="font-size:72px; transition: all 0.4s ease;">●</div>
+    <div id="ar-direction-text" style="font-size:1.4rem; font-weight:700; color:#9aa4bd;">--</div>
+    <div id="ar-sound-text" style="font-size:1rem; color:#9aa4bd;">--</div>
+  </div>
+
+  <div style="display:flex; justify-content:center; gap:24px;">
+    <div id="ar-left" class="ar-pill">◀ Left</div>
+    <div id="ar-center" class="ar-pill">● Center</div>
+    <div id="ar-right" class="ar-pill">Right ▶</div>
+  </div>
+</section>
   <section class="card alerts-card">
     <div class="section-head">
       <h3>Recent Alerts</h3>
       <span class="muted">Latest 20</span>
     </div>
-
     <div id="alerts-list" class="alerts-stack">
       {% if alerts %}
         {% for alert in alerts %}
@@ -133,8 +149,6 @@
     </div>
   </section>
 </div>
-
-<script src="{{ url_for('static', filename='ar.js') }}"></script>
 
 <!-- JavaScript for real-time dashboard updates -->
 <script>
@@ -267,5 +281,5 @@
   setInterval(fetchLatestPrediction, 1500);
   setInterval(fetchAlerts, 2500);
 </script>
-
+<script src="{{ url_for('static', filename='ar.js') }}"></script>
 {% endblock %}
